@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow AI · 项目学习笔记</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;background:#f5f6f8;color:#333d47;line-height:1.78;font-size:15px}
+.hero{padding:54px 40px 42px;background:linear-gradient(160deg,#e9eef3 0%,#f5f6f8 70%);border-bottom:1px solid #dce2e8}
+.hero-inner{max-width:1240px;margin:0 auto}
+.hero h1{font-size:34px;font-weight:700;letter-spacing:.5px;color:#2e3944}
+.hero .sub{margin-top:12px;font-size:15.5px;color:#5c6b7a;max-width:860px}
+.chips{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12.5px;color:#5d7a94;background:#e3eaf0;border:1px solid #d2dde6;border-radius:999px;padding:3px 12px}
+.layout{max-width:1240px;margin:0 auto;padding:32px 40px 72px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:38px;align-items:start}
+.toc{position:sticky;top:24px;background:#fbfcfd;border:1px solid #dce2e8;border-radius:12px;padding:18px 16px;font-size:13.5px}
+.toc h3{font-size:13px;color:#8595a5;letter-spacing:1px;margin-bottom:10px;font-weight:600}
+.toc ol{list-style:none;margin:0}
+.toc li{margin:1px 0}
+.toc a{color:#4d5c6b;text-decoration:none;display:block;padding:3px 6px;border-radius:6px;border-left:2px solid transparent;transition:background .15s}
+.toc a:hover{color:#5d7a94;background:#eef2f6}
+main{min-width:0}
+section{margin-bottom:58px}
+h2{font-size:23px;color:#2e3944;border-left:4px solid #7a94ab;padding-left:12px;margin-bottom:18px;scroll-margin-top:20px}
+h3{font-size:17.5px;color:#3d4a57;margin:28px 0 12px}
+h4{font-size:15px;color:#46545f;margin:18px 0 8px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 22px}
+li{margin:4px 0}
+code{font-family:"Cascadia Code",Consolas,"JetBrains Mono",monospace;background:#e9edf2;color:#41505e;padding:1px 5px;border-radius:4px;font-size:.9em}
+pre{background:#eef1f5;border:1px solid #dde3e9;border-left:3px solid #7a94ab;border-radius:8px;padding:14px 16px;overflow-x:auto;margin:12px 0;font-size:13px;line-height:1.62}
+pre code{background:none;padding:0;font-size:inherit;color:#3d4854}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th{background:#e9edf2;color:#41505e;text-align:left;padding:8px 10px;border:1px solid #d8dfe6;font-weight:600}
+td{padding:8px 10px;border:1px solid #d8dfe6;vertical-align:top}
+tr:nth-child(even) td{background:#fafbfc}
+.callout{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14px;border:1px solid;line-height:1.7}
+.tip{background:#eef4f0;border-color:#cfe0d5;color:#3f5a4a}
+.pit{background:#f7f1ea;border-color:#e5d6c4;color:#6b4f33}
+.why{background:#eff2f7;border-color:#d4dce8;color:#44536b}
+.callout b{font-weight:600}
+.badge{display:inline-block;font-size:11.5px;border-radius:6px;padding:1px 8px;margin-left:6px;vertical-align:2px}
+.badge-legacy{background:#f0e9e4;color:#8a6a50;border:1px solid #e0d2c6}
+.badge-key{background:#e3ebf3;color:#4a6a8a;border:1px solid #cfdde9}
+footer{border-top:1px solid #dce2e8;padding:28px 40px;text-align:center;color:#8595a5;font-size:13px;background:#fbfcfd}
+@media (max-width:920px){.layout{grid-template-columns:1fr;padding:24px 18px 48px}.toc{position:static}.hero{padding:36px 20px 30px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="hero-inner">
+<h1>TaskFlow AI · 项目学习笔记</h1>
+<p class="sub">一份从零到彻底掌握本项目的完整导览 —— 把 LLM Agent 的「规划 → 安全执行 → 学习」全链路拆到每一层、每个文件、每段关键代码。读完你应该能够:独立讲清整个数据流、定位并修改任意模块、按同样的架构亲手新增一个工具或一条状态机分支。</p>
+<div class="chips">
+<span class="chip">Android · Kotlin · Jetpack Compose</span>
+<span class="chip">包名 com.example.taskflowai</span>
+<span class="chip">AGP 9.4 · Kotlin 2.2.10 · minSdk 24 / targetSdk 34</span>
+<span class="chip">笔记生成:2026-10-06</span>
+<span class="chip">全部功能已真机验证(华为 SEA-AL10)</span>
+</div>
+</div>
+</header>
+
+<div class="layout">
+
+<aside class="toc">
+<h3>目录</h3>
+<ol>
+<li><a href="#s1">1 · 项目总览:它是什么、用了什么</a></li>
+<li><a href="#s2">2 · 架构设计:分层与六大原则</a></li>
+<li><a href="#s3">3 · 文件结构详解:每个文件干什么</a></li>
+<li><a href="#s4">4 · 数据层精讲:Room 与网络协议</a></li>
+<li><a href="#s5">5 · 领域层精讲:工具系统与 Agent</a></li>
+<li><a href="#s6">6 · 执行层精讲:中断/恢复状态机</a></li>
+<li><a href="#s7">7 · UI 层精讲:MVI + Compose</a></li>
+<li><a href="#s8">8 · 系统级专题:闹钟 · 语音 · 跨应用</a></li>
+<li><a href="#s9">9 · 依赖注入与工程配置</a></li>
+<li><a href="#s10">10 · 数据库版本演进史</a></li>
+<li><a href="#s11">11 · 踩坑与设计决策集</a></li>
+<li><a href="#s12">12 · 学习路线与自测题</a></li>
+<li><a href="#s13">13 · 附录:构建 · 调试 · 术语表</a></li>
+</ol>
+</aside>
+
+<main>
+
+<!-- ============================================================ -->
+<!-- 第 1 章 -->
+<!-- ============================================================ -->
+<section id="s1">
+<h2>1 · 项目总览:它是什么、用了什么</h2>
+
+<h3>1.1 一句话定位</h3>
+<p>TaskFlow AI 是一个 Android 端的 <b>LLM Agent 应用</b>:用户用一句自然语言下指令,大模型负责把它规划成工具调用序列(Function Calling),应用负责<b>安全地</b>在本机执行这些工具(闹钟 / 日历 / 短信 / 天气 / 打开应用……),执行过程中支持「需要确认」「需要授权」的中断与恢复;任务成功后自动把经验写入本地知识库(RAG),越用越懂你。</p>
+<p>三个「不是」帮你锚定它的定位:</p>
+<ul>
+<li>不是套壳聊天 —— 有持久化任务引擎、权限闸门、中断恢复状态机;</li>
+<li>不是玩具 Demo —— 每个能力都在真实华为设备上验证过,踩遍了 EMUI 的坑;</li>
+<li>不是黑盒 —— 每个设计决策在源码注释里都有「为什么」,这份笔记把它们系统化。</li>
+</ul>
+
+<h3>1.2 能力一览</h3>
+<table>
+<tr><th>能力</th><th>说明</th><th>关键文件</th></tr>
+<tr><td>🔧 Function Calling 工具系统</td><td>7 个工具:set_alarm / cancel_alarm / query_alarms / open_app / add_calendar_event / send_sms / search_weather;新增工具 = 1 个类 + 1 行绑定</td><td><code>domain/tool/**</code></td></tr>
+<tr><td>🔄 响应式任务引擎</td><td>Room 持久化状态机 + WorkManager 后台执行;进程被杀不丢进度;挂起/恢复幂等</td><td><code>TaskExecutor</code> <code>TaskExecutionWorker</code></td></tr>
+<tr><td>🛡️ 人在回路</td><td>敏感操作(短信)双闸:用户确认 + 系统权限;权限不足优雅挂起,授权后从断点恢复,绝不崩溃</td><td><code>SendSmsTool</code> <code>TaskDetailScreen</code></td></tr>
+<tr><td>🧠 RAG 个性化</td><td>成功任务自动向量化入库;规划前检索相似历史(Few-Shot)注入提示词;含维度自愈与 Token 三层防御</td><td><code>KnowledgeRepository</code> <code>PromptBuilder</code></td></tr>
+<tr><td>💬 Agent 闭环</td><td>工具执行结果按 OpenAI 协议回灌大模型,生成自然语言总结写回任务(answer 不再裸奔)</td><td><code>TaskSummarizer</code></td></tr>
+<tr><td>⏰ 可管理的闹钟</td><td>应用自持注册(setAlarmClock),可设置/查询/取消;到点全屏响铃(锁屏亮屏),一键关闭</td><td><code>data/alarm/**</code></td></tr>
+<tr><td>🎙️ 语音双引擎</td><td>按住说话;系统识别器失效自动切 Vosk 离线引擎(42MB 中文模型首次自动下载)</td><td><code>VoiceInput</code> <code>VoskVoiceEngine</code></td></tr>
+<tr><td>🎨 MVI + Compose</td><td>State/Intent/Effect 严格分离;全程状态驱动动画(Crossfade / AnimatedVisibility / 脉冲)</td><td><code>ui/screens/**</code></td></tr>
+<tr><td>⚙️ 运行时配置</td><td>DataStore 持久化;设置页切 DeepSeek / Qwen / 自定义 Base URL,保存即生效无需重启</td><td><code>SettingsRepository</code> <code>NetworkModule</code></td></tr>
+</table>
+
+<h3>1.3 技术栈(完整版本表)</h3>
+<table>
+<tr><th>类别</th><th>技术</th><th>版本</th><th>在本项目中的角色</th></tr>
+<tr><td>构建</td><td>AGP / Gradle</td><td>9.4.0 / 9.6</td><td>compileSdk 37(AGP9 新 DSL);配置缓存开启</td></tr>
+<tr><td>语言</td><td>Kotlin</td><td>2.2.10</td><td>+ KSP 2.2.10-2.0.2(注解处理)+ kotlinx.serialization 1.9.0</td></tr>
+<tr><td>UI</td><td>Jetpack Compose(BOM 2026.09.00)</td><td>Material 3</td><td>全部界面;Dynamic Color(Android 12+)</td></tr>
+<tr><td>导航</td><td>navigation-compose</td><td>2.10.2</td><td>home / task/{taskId} / settings 三目的地</td></tr>
+<tr><td>依赖注入</td><td>Hilt(Dagger)</td><td>2.60.1 + androidxHilt 1.4.0</td><td>含 hilt-work(@HiltWorker)与 hilt-compiler(KSP)</td></tr>
+<tr><td>持久化</td><td>Room</td><td>2.8.5</td><td>4 张表、v1→v5 增量迁移、schema 导出</td></tr>
+<tr><td>配置存储</td><td>DataStore Preferences</td><td>1.2.1</td><td>LLM 配置(Key/服务商/Base URL)</td></tr>
+<tr><td>网络</td><td>Retrofit / OkHttp / kotlinx-serialization</td><td>3.0.0 / 5.5.0</td><td>OpenAI 兼容协议;运行时切 Base URL(@Url)</td></tr>
+<tr><td>后台任务</td><td>WorkManager</td><td>2.12.0</td><td>CoroutineWorker 推进任务状态机</td></tr>
+<tr><td>语音</td><td>Vosk(vosk-android)</td><td>0.3.75</td><td>离线兜底 ASR(系统识别器不可用时)</td></tr>
+<tr><td>测试</td><td>JUnit / Espresso / Compose UI Test</td><td>4.13.2 / 3.5.1</td><td>模板自带</td></tr>
+</table>
+
+<h3>1.4 工程配置要点</h3>
+<table>
+<tr><th>配置</th><th>值 / 位置</th><th>为什么</th></tr>
+<tr><td>compileSdk / minSdk / targetSdk</td><td>37 / 24 / 34</td><td>AGP9 的 <code>compileSdk { version = release(37) }</code> 新 DSL;低版本设备全兼容策略</td></tr>
+<tr><td><code>android.disallowKotlinSourceSets=false</code></td><td>gradle.properties</td><td><b>AGP 9 兼容开关</b>:KSP 等插件仍通过 <code>kotlin.sourceSets</code> 注册生成目录,默认会被 AGP9 拒绝</td></tr>
+<tr><td><code>ksp("androidx.hilt:hilt-compiler")</code></td><td>app/build.gradle.kts</td><td><b>@HiltWorker 必需</b>:只加 dagger 的编译器不够,缺了会静默退化为反射并在运行时抛 NoSuchMethodException</td></tr>
+<tr><td><code>ksp { arg("room.schemaLocation", ...) }</code></td><td>app/build.gradle.kts</td><td>导出 schema JSON(app/schemas/),迁移正确性的唯一校验依据</td></tr>
+<tr><td>release optimization DSL</td><td><code>optimization { enable = true; packageScope = ... }</code></td><td>AGP9 新优化块,对 androidx/kotlin/kotlinx 包开启优化</td></tr>
+<tr><td>material-icons core + extended 显式声明</td><td>build.gradle.kts</td><td>新版 material3 不再传递携带图标库,不显式加会缺图标</td></tr>
+</table>
+
+<h3>1.5 开发里程碑(6 个阶段的演进)</h3>
+<table>
+<tr><th>阶段</th><th>主题</th><th>产出</th></tr>
+<tr><td>0</td><td>项目初始化</td><td>Compose 工程 + 主题 + 导航骨架</td></tr>
+<tr><td>1</td><td>LLM 网络层</td><td>OpenAI 兼容 DTO / Retrofit(@Url)/ 运行时配置</td></tr>
+<tr><td>2</td><td>工具系统与 Function Calling</td><td>Tool 契约 / ToolResult 密封类 / 权限预检 / 双段确认(<code>ToolDemoScreen</code> 为该阶段测试界面)</td></tr>
+<tr><td>3</td><td>响应式执行引擎</td><td>Room 状态机 / WorkManager / 中断恢复(<code>TaskCenterScreen</code> 为该阶段界面)</td></tr>
+<tr><td>4</td><td>MVI + Compose UI</td><td>Contract/ViewModel/Screen 三件套 + 状态驱动动画,取代阶段 3 界面</td></tr>
+<tr><td>5</td><td>RAG 个性化</td><td>向量检索 / 学习闭环 / Token 防御</td></tr>
+<tr><td>6</td><td>语音 / 设置 / 防呆</td><td>双引擎语音、设置页、全局错误处理、README</td></tr>
+<tr><td>7*</td><td>持续演进(用户驱动)</td><td>双引擎真机落地 / 真实数据 / 左划删除 / 可管理闹钟 / Agent 闭环 / open_app ……</td></tr>
+</table>
+<p><small>* 阶段 7 并非最初计划的阶段,是开发过程中按真实使用需求持续追加的功能(见第 11 章各条踩坑的由来)。</small></p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 2 章 -->
+<!-- ============================================================ -->
+<section id="s2">
+<h2>2 · 架构设计:分层与六大原则</h2>
+
+<h3>2.1 分层架构图</h3>
+<pre><code>┌───────────────────────────── UI 层(Compose + MVI)─────────────────────────────┐
+│  HomeScreen ──Intent──► MainViewModel ──Effect──► 导航/权限/Snackbar           │
+│  TaskDetailScreen(步骤条动画)   SettingsScreen(配置 + 清记忆)                   │
+│  VoiceInput(双引擎)  AlarmAlertActivity(全屏响铃)                               │
+└──────────────▲────────────────────────────────────────────▲───────────────────┘
+               │ StateFlow(不可变 UiState)                    │ Flow 实时刷新
+┌──────────────┴─────────────── 领域/数据层 ─────────────────┴───────────────────┐
+│  TaskRepository ──► TaskExecutor(状态机)──► ToolRegistry ──► Tool(s) ×7        │
+│       │                   │                    ▲                │             │
+│       │                   │               ToolContext      ToolResult         │
+│       │                   │               (安全系统入口)    (密封类状态)        │
+│       │           WorkManager Worker(TaskExecutionWorker)                      │
+│       │                   │                                                    │
+│       │        ┌──────────┴──────────┐                                         │
+│       ├───────►│   Room(唯一事实来源) │◄── TaskDao / StepDao / KnowledgeDao     │
+│       │        └──────────┬──────────┘                                         │
+│       ▼                   ▼                                                    │
+│  KnowledgeRepository ◄─ 学习闭环(仅 SUCCESS 任务入库)                         │
+│       │                                                                        │
+│       ▼  检索(Top3 / 相似度≥0.75 / Dispatchers.Default 分片并行)               │
+│  PromptBuilder(Few-Shot + 2000 字符 Token 防御)                                │
+└────────────────────────────────────────────────────────────────────────────────┘
+               │
+               ▼
+┌──────────────────── 网络层(OpenAI 兼容)────────────────────┐
+│  LlmClient ──► Retrofit(@Url 动态地址)──► OkHttp(请求时刻读 Key) │
+│       ├── chat/completions(支持 tools / tool_calls)          │
+│       └── embeddings(远端优先,本地 n-gram 回退)             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+<h3>2.2 一次任务的生命周期(中断与恢复)</h3>
+<pre><code>提交指令 → LLM 规划 tool_calls → 落库 Task+Steps(PENDING)
+  → Worker 顺序执行: step RUNNING → Success? 继续
+        ├─ RequiresUserConfirmation → step WAITING_USER + task PAUSED ▸ Worker 结束
+        │      用户点[允许] → 持久化 confirmed → 重新入队 → 带确认重放
+        ├─ RequiresPermission → step WAITING_USER + task PAUSED ▸ Worker 结束
+        │      用户系统授权 → 重新入队 → 重放
+        └─ 全部步骤 SUCCESS → task SUCCESS
+              ├─ 后台向量化写入知识库(学习闭环)
+              └─ 工具结果回灌 LLM → 生成自然语言总结写回任务(Agent 闭环)</code></pre>
+<div class="why"><b>把这张图刻在脑子里。</b>整份笔记的后半部分,本质上都是这张图的展开:每一根箭头对应一个类、一次数据库写入或一条协程调度。</div>
+
+<h3>2.3 六大核心设计原则</h3>
+<table>
+<tr><th>#</th><th>原则</th><th>含义</th><th>落点</th></tr>
+<tr><td>1</td><td><b>Room 是唯一事实来源</b></td><td>任务/步骤的一切状态都有库中一行;Worker 与进程随时可以死,重启后从库里重建执行位置。UI 也靠 Room Flow 实时刷新,而不是自己缓存状态。</td><td>TaskEntity/StepEntity、所有 DAO 的 Flow 查询、TaskExecutor 的"每步先写库"</td></tr>
+<tr><td>2</td><td><b>控制流用密封类,不用异常</b></td><td>"缺权限""需确认"不是意外,是预设流程,所以用 <code>ToolResult.RequiresXxx</code> 返回值表达;异常只留给真正的意外。编译器用 <code>when</code> 穷尽检查保证不漏分支。</td><td>ToolResult、TaskExecutor.runSteps、ToolRegistry.execute 的兜底</td></tr>
+<tr><td>3</td><td><b>人在回路 + 幂等恢复</b></td><td>敏感操作先挂起等用户拍板;挂起状态持久化(等什么/等哪些权限/是否已确认);恢复请求带状态守卫,重复点击安全无副作用。</td><td>StepDao.pause/markConfirmed、TaskExecutor.resumeTask、TaskRepository.enqueueUniqueWork</td></tr>
+<tr><td>4</td><td><b>双闭环:学习 + 回灌</b></td><td>任务全部成功 → (a) 向量化入库供未来检索(RAG 学习闭环);(b) 工具结果回灌大模型生成自然语言总结(Agent 闭环)。两者的失败都不影响任务已成功的状态。</td><td>KnowledgeRepository.remember、TaskSummarizer.summarize</td></tr>
+<tr><td>5</td><td><b>运行时配置,请求时刻读取</b></td><td>API Key / Base URL / 服务商存 DataStore 并镜像到内存 StateFlow;网络层在"每次请求时刻"读最新值 —— 改设置立即生效,无需重启或重建网络栈。</td><td>SettingsRepository、NetworkModule 拦截器、LlmClient、LlmApiService(@Url)</td></tr>
+<tr><td>6</td><td><b>解耦扩展:一处定义,一处注册</b></td><td>新增工具 = 实现 Tool 接口 + ToolModule 一行 @IntoSet;Registry/规划/执行/UI 全部零改动。领域模型(ToolDef)与网络模型(ToolDefinition)刻意分离。</td><td>Tool、ToolModule、ToolRegistry、ToolDef</td></tr>
+</table>
+
+<div class="tip"><b>阅读建议:</b>如果你只有 30 分钟,请按「第 2 章 → 第 3 章 → 第 6 章(TaskExecutor)→ 第 11 章(踩坑)」的顺序读;如果要从头学,第 12 章给了一条按源码依赖顺序的阅读路线。</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 3 章 -->
+<!-- ============================================================ -->
+<section id="s3">
+<h2>3 · 文件结构详解:每个文件干什么</h2>
+
+<h3>3.1 完整目录树(带逐行注释)</h3>
+<pre><code>Xiaoxin_TaskFlow/
+├── README.md                        # 项目说明:特性一览 / API 配置 / 完整使用指南
+├── TaskFlow学习笔记.html             # 本文档
+├── prompt0..6.md                    # 各开发阶段的要求文件(已 gitignore,含 API Key 勿提交)
+├── gradle/libs.versions.toml        # 依赖版本表(versions/libraries/plugins 三段)
+└── app/
+    ├── build.gradle.kts             # 插件 / 依赖 / ksp schema 导出 / release 优化块
+    ├── schemas/                     # Room schema 导出(1.json ~ 5.json,迁移校验的唯一依据)
+    └── src/main/
+        ├── AndroidManifest.xml      # 权限 / 组件注册 / 包可见性 queries / WM 初始化移除
+        └── java/com/example/taskflowai/
+            ├── MainActivity.kt              # 唯一 Activity:Compose 挂载 + adb prefill 机制
+            ├── TaskFlowApp.kt               # @HiltAndroidApp + HiltWorkerFactory 配置
+            ├── data/
+            │   ├── alarm/
+            │   │   ├── AlarmScheduler.kt    # 自持闹钟调度:setAlarmClock 注册/取消/列举
+            │   │   └── AlarmReceiver.kt     # 到点广播:直接拉起全屏界面 + 兜底通知 + 登记清理
+            │   ├── executor/
+            │   │   └── TaskExecutor.kt      # ★ 中断/恢复状态机(引擎无内存状态,一切以 Room 为准)
+            │   ├── local/                   # Room 持久层 + DataStore 设置模型
+            │   │   ├── TaskFlowDatabase.kt  # DB(version=5)+ 4 个增量迁移 + TypeConverters
+            │   │   ├── TaskEntity.kt        # 任务表 + TaskStatus(PENDING/RUNNING/PAUSED/SUCCESS/FAILED)
+            │   │   ├── StepEntity.kt        # 步骤表 + StepStatus/PendingType + 三个"恢复语义"字段
+            │   │   ├── AlarmEntity.kt       # 闹钟登记表(id 即 PendingIntent requestCode)
+            │   │   ├── KnowledgeEntity.kt   # RAG 记忆表(ByteArray 向量,手写 equals/hashCode)
+            │   │   ├── TaskWithSteps.kt     # @Relation 关系对象(暴露 orderedSteps 统一排序)
+            │   │   ├── TaskDao.kt           # 任务 DAO(含两个 Flow 实时观察入口)
+            │   │   ├── StepDao.kt           # 步骤 DAO(原子 pause / markConfirmed)
+            │   │   ├── AlarmDao.kt          # 闹钟 DAO(最简三方法)
+            │   │   ├── KnowledgeDao.kt      # 知识 DAO(去重删 / 维度自愈回写 / 清空)
+            │   │   └── LlmSettings.kt       # 运行时 LLM 配置模型 + LlmProvider 枚举
+            │   ├── remote/                  # 网络协议层(OpenAI 兼容)
+            │   │   ├── ChatModels.kt        # ★ Chat Completions DTO(ToolCall.type 故意无默认值)
+            │   │   ├── EmbeddingModels.kt   # Embeddings DTO(JsonElement 承载字符串/数组双形态)
+            │   │   ├── LlmApiService.kt     # Retrofit 接口:全部方法用完整 @Url
+            │   │   ├── LlmClient.kt         # 每次请求读最新设置;ToolDef→ToolDefinition 映射
+            │   │   └── LlmConfig.kt         # 出厂默认常量(API Key 明文硬编码=反面教材)
+            │   ├── repository/
+            │   │   ├── TaskRepository.kt    # ★ 总编排:规划 → 落库 → 入队 → 恢复
+            │   │   ├── KnowledgeRepository.kt # ★ RAG:检索 / 学习 / 维度自愈 / 本地回退
+            │   │   └── SettingsRepository.kt  # DataStore 持久化 ↔ 内存 StateFlow 单向镜像
+            │   └── worker/
+            │       └── TaskExecutionWorker.kt # @HiltWorker 无状态一次性推进器
+            ├── di/
+            │   ├── AppModule.kt             # WorkManager / DataStore / @ApplicationScope
+            │   ├── DatabaseModule.kt        # TaskFlowDatabase + 4 个 DAO(注册 4 条迁移)
+            │   ├── NetworkModule.kt         # Json 配置 / OkHttp(动态 Key 拦截器)/ Retrofit
+            │   └── ToolModule.kt            # 7 个工具 @Binds @IntoSet 多绑定
+            ├── domain/
+            │   ├── agent/
+            │   │   ├── PromptBuilder.kt     # 规划提示词 + 三层 Token 防御(2000 字符预算)
+            │   │   ├── TaskSummarizer.kt    # Agent 闭环:工具结果按协议回灌生成总结
+            │   │   ├── VectorMath.kt        # 单趟余弦相似度 + FloatArray↔ByteArray
+            │   │   └── LocalEmbedder.kt     # 本地 256 维 n-gram 向量(FNV-1a + L2 归一化)
+            │   └── tool/
+            │       ├── Tool.kt              # 工具契约接口(元数据 + execute)
+            │       ├── ToolContext.kt       # 系统能力唯一安全入口 + 确认状态载体
+            │       ├── ToolResult.kt        # ★ 四结局密封类(Success/Failure/RequiresPermission/RequiresUserConfirmation)
+            │       ├── ToolRegistry.kt      # 注册中心:查表执行 + 两级异常兜底 + 重名检测
+            │       ├── ToolDef.kt           # 领域层工具模型(与网络 DTO 刻意分离)
+            │       └── impl/                # 7 个工具实现 ↓
+            │           ├── SetAlarmTool.kt      # 设置自持闹钟(特殊权限 canScheduleExactAlarms)
+            │           ├── CancelAlarmTool.kt   # 取消闹钟(all/time/label;空参绝不默认全取消)
+            │           ├── QueryAlarmsTool.kt   # 查询闹钟(只读)
+            │           ├── OpenAppTool.kt       # ★ 中文名模糊匹配打开其他应用
+            │           ├── AddCalendarEventTool.kt # 写系统日历(ContentResolver)
+            │           ├── SendSmsTool.kt       # ★ 双闸门样本:确认闸 + 权限闸
+            │           └── SearchWeatherTool.kt # Open-Meteo 真实天气(绝不回退假数据)
+            └── ui/
+                ├── alarm/
+                │   └── AlarmAlertActivity.kt    # 全屏响铃界面(锁屏亮屏/循环铃声/一键关闭)
+                ├── components/
+                │   ├── StatusBadge.kt           # 动画状态徽章 / 步骤状态节点 / 颜色映射
+                │   ├── ToolIcon.kt              # 工具名 → Material 图标映射
+                │   ├── VoiceInput.kt            # ★ 按住说话 + 引擎回退链 + 看门狗 + 脉冲动画
+                │   └── VoskVoiceEngine.kt       # Vosk 模型自动下载/解压/加载 + 会话管理
+                ├── navigation/
+                │   └── AppNavHost.kt            # 三目的地导航图(home / task/{taskId} / settings)
+                ├── screens/
+                │   ├── MainContract.kt          # Home 屏 MVI 契约(UiState/Intent/Effect)
+                │   ├── MainViewModel.kt         # ★ MVI 闭环中枢(Room Flow ⊕ 本地状态)
+                │   ├── HomeScreen.kt            # ★ 首页(输入卡片/任务卡/左划删除/动画)
+                │   ├── TaskDetailContract.kt    # 详情屏 MVI 契约
+                │   ├── TaskDetailViewModel.kt   # 详情屏 VM(SavedStateHandle 取 taskId)
+                │   ├── TaskDetailScreen.kt      # ★ 步骤条 + 允许/拒绝 + 权限 Effect→launcher 链路
+                │   ├── SettingsContract.kt      # 设置屏契约(无 Effect)
+                │   ├── SettingsViewModel.kt     # 设置屏 VM(草稿模式)
+                │   ├── SettingsScreen.kt        # 设置界面(服务商/Key/BaseURL/清记忆)
+                │   ├── TaskCenterScreen.kt      # ⚠️ 阶段 3 遗留(非 MVI 版任务中心)
+                │   ├── TaskCenterViewModel.kt   # ⚠️ 阶段 3 遗留
+                │   ├── ToolDemoScreen.kt        # ⚠️ 阶段 2 遗留(Function Calling 手动测试台)
+                │   └── ToolDemoViewModel.kt     # ⚠️ 阶段 2 遗留(TaskExecutor 的前身)
+                └── theme/
+                    ├── Color.kt                 # 主题色(Purple/PurpleGrey/Pink 三族)
+                    ├── Theme.kt                 # TaskFlowTheme(动态取色,Android 12+)
+                    └── Type.kt                  # 排版(bodyLarge 等)</code></pre>
+
+<h3>3.2 各层文件速查(按职责分组)</h3>
+<table>
+<tr><th>分组</th><th>文件</th><th>一句话作用</th><th>详解章节</th></tr>
+<tr><td rowspan="5">入口与配置</td><td>MainActivity.kt</td><td>唯一 Activity;adb prefill 预填输入框(singleTop + onNewIntent)</td><td>§7.1</td></tr>
+<tr><td>TaskFlowApp.kt</td><td>@HiltAndroidApp;提供 HiltWorkerFactory 给 WorkManager</td><td>§9.2</td></tr>
+<tr><td>AppNavHost.kt</td><td>三目的地导航图</td><td>§7.1</td></tr>
+<tr><td>AndroidManifest.xml</td><td>8 项权限、4 个组件、queries 包可见性、移除 WM 默认初始化</td><td>§9.4</td></tr>
+<tr><td>build.gradle.kts</td><td>依赖与 KSP 配置(hilt-compiler / room schema 导出)</td><td>§9.3</td></tr>
+<tr><td rowspan="6">数据持久化</td><td>TaskFlowDatabase.kt</td><td>DB v5 + 4 条迁移 + 枚举转换器</td><td>§4.2 / §10</td></tr>
+<tr><td>TaskEntity / StepEntity</td><td>任务与步骤实体(恢复语义字段的载体)</td><td>§4.2</td></tr>
+<tr><td>AlarmEntity / KnowledgeEntity</td><td>闹钟登记表 / RAG 记忆表</td><td>§4.2 / §8.1</td></tr>
+<tr><td>TaskWithSteps.kt</td><td>@Relation 关系对象;orderedSteps 排序</td><td>§4.2</td></tr>
+<tr><td>四个 DAO</td><td>CRUD + Flow 观察 + 原子 pause + 自愈回写</td><td>§4.2</td></tr>
+<tr><td>LlmSettings.kt</td><td>运行时配置模型(常量降级为出厂默认值)</td><td>§4.4</td></tr>
+<tr><td rowspan="3">网络</td><td>ChatModels.kt / EmbeddingModels.kt</td><td>OpenAI 兼容协议 DTO</td><td>§4.1</td></tr>
+<tr><td>LlmApiService.kt / LlmClient.kt</td><td>@Url 动态地址 + 请求时刻读配置</td><td>§4.1</td></tr>
+<tr><td>LlmConfig.kt</td><td>出厂默认常量(含安全反面教材)</td><td>§11.18</td></tr>
+<tr><td rowspan="3">仓库层</td><td>TaskRepository.kt</td><td>规划→落库→入队→恢复的总编排</td><td>§4.3</td></tr>
+<tr><td>KnowledgeRepository.kt</td><td>RAG 检索/学习/维度自愈</td><td>§5.4</td></tr>
+<tr><td>SettingsRepository.kt</td><td>DataStore ↔ 内存 StateFlow 镜像</td><td>§4.4</td></tr>
+<tr><td rowspan="5">领域层</td><td>Tool / ToolContext / ToolResult / ToolRegistry / ToolDef</td><td>工具契约体系(五件套)</td><td>§5.1</td></tr>
+<tr><td>impl/ 七个工具</td><td>系统能力封装(每个自带权限/确认闸)</td><td>§5.2</td></tr>
+<tr><td>PromptBuilder.kt</td><td>规划提示词 + Token 三层防御</td><td>§5.3</td></tr>
+<tr><td>TaskSummarizer.kt</td><td>Agent 闭环(结果回灌)</td><td>§5.5</td></tr>
+<tr><td>VectorMath / LocalEmbedder</td><td>相似度数学 / 本地向量化</td><td>§5.4</td></tr>
+<tr><td rowspan="4">执行层</td><td>TaskExecutor.kt</td><td>中断/恢复状态机(全项目心脏)</td><td>§6.1</td></tr>
+<tr><td>TaskExecutionWorker.kt</td><td>无状态一次性推进器(@HiltWorker)</td><td>§6.2</td></tr>
+<tr><td>AlarmScheduler.kt</td><td>自持闹钟注册/取消(PendingIntent 身份体系)</td><td>§8.1</td></tr>
+<tr><td>AlarmReceiver.kt</td><td>到点:直接拉起 + 兜底通知 + goAsync 清理</td><td>§8.1</td></tr>
+<tr><td rowspan="10">UI 层</td><td>MainContract / MainViewModel / HomeScreen</td><td>首页 MVI 三件套</td><td>§7.2</td></tr>
+<tr><td>TaskDetailContract / ViewModel / Screen</td><td>详情步骤条 + 权限链路</td><td>§7.3</td></tr>
+<tr><td>SettingsContract / ViewModel / Screen</td><td>设置页(草稿模式)</td><td>§7.4</td></tr>
+<tr><td>StatusBadge.kt</td><td>动画徽章与步骤节点</td><td>§7.5</td></tr>
+<tr><td>ToolIcon.kt</td><td>图标映射</td><td>§7.5</td></tr>
+<tr><td>VoiceInput.kt</td><td>语音输入双引擎链路</td><td>§8.2</td></tr>
+<tr><td>VoskVoiceEngine.kt</td><td>Vosk 离线引擎</td><td>§8.2</td></tr>
+<tr><td>AlarmAlertActivity.kt</td><td>全屏响铃界面</td><td>§8.1</td></tr>
+<tr><td>theme/ 三件</td><td>颜色/主题/字体</td><td>§7.6</td></tr>
+<tr><td>TaskCenter* / ToolDemo*</td><td>⚠️ 遗留文件(见 3.3)</td><td>—</td></tr>
+</table>
+
+<h3>3.3 遗留文件(理解演进史的好材料)</h3>
+<p>以下 4 个文件<b>当前未被任何运行链路引用</b>(AppNavHost 不注册、MainActivity 不引用),是早期阶段的产物。保留它们的价值在于「前后对照」:</p>
+<table>
+<tr><th>文件</th><th>阶段</th><th>对照价值</th></tr>
+<tr><td>TaskCenterScreen.kt + TaskCenterViewModel.kt</td><td>阶段 3</td><td><b>MVI 重构前</b>的写法:4 个散装 StateFlow(非单一 UiState)、挂起步骤内联按钮、私有静态 StatusBadge(无动画)。和 HomeScreen 的 MVI 版对照,能直观看到"为什么要 MVI"。</td></tr>
+<tr><td>ToolDemoScreen.kt + ToolDemoViewModel.kt</td><td>阶段 2</td><td><b>手动版 Function Calling 测试台</b>:直接调 LlmClient + ToolRegistry 执行单个工具,按 ToolResult 四分支展示(✅/❌/🔒/⚠️ 确认按钮)。它是 TaskExecutor 的"前身",适合第一次理解双段确认时对着真机跑。</td></tr>
+</table>
+<div class="tip"><b>学习玩法:</b>读完 §6 后,回来对比 <code>ToolDemoViewModel.sendInstruction()</code>(同步、单步、无持久化)与 <code>TaskExecutor.runSteps()</code>(异步、多步、全持久化)—— 两段代码之间的差距,就是「Demo 到工程」的全部距离。</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 4 章 -->
+<!-- ============================================================ -->
+<section id="s4">
+<h2>4 · 数据层精讲:Room 与网络协议</h2>
+
+<h3>4.1 网络协议层(data/remote)</h3>
+
+<h4>4.1.1 ChatModels.kt —— OpenAI 兼容协议 DTO(全项目"坑"最密集的文件)</h4>
+<p>先看这段贯穿整个项目的文件头注释,它解释了序列化策略:</p>
+<pre><code>/*
+ * OpenAI 兼容协议(DeepSeek / Qwen)的 Chat Completions 数据模型。
+ *
+ * 所有可空字段都给了默认值 null,配合 Json { explicitNulls = false }:
+ * 请求时值为 null 的字段不会出现在 JSON 里(例如不带 tools 就不发 "tools": null),
+ * 解析响应时服务端多返回的字段也被 ignoreUnknownKeys 忽略,接口升级不会崩。
+ */</code></pre>
+
+<p><b>核心数据结构</b>(简化版,完整字段见源码):</p>
+<pre><code>@Serializable
+data class ChatMessage(
+    val role: String,
+    val content: String? = null,                       // assistant 只发 tool_calls 时可为 null
+    @SerialName("tool_calls") val toolCalls: List&lt;ToolCall&gt;? = null,
+    @SerialName("tool_call_id") val toolCallId: String? = null,  // role="tool" 时回填,协议配对
+)
+
+@Serializable
+data class ToolCall(
+    val id: String,
+    val type: String,          // ⚠️ 故意不设默认值(见下)
+    val function: FunctionCall,
+)
+
+@Serializable
+data class FunctionCall(
+    val name: String,
+    val arguments: String = "", // 注意是字符串,不是对象!OpenAI 协议的经典坑
+)</code></pre>
+
+<div class="pit"><b>踩坑 · 全项目最有教学价值的反直觉点:为什么 <code>type</code> 不能有默认值?</b>
+<p>Json 配置里开了 <code>encodeDefaults = false</code> —— 序列化时会<b>跳过"值等于默认值"的字段</b>。如果写 <code>val type: String = "function"</code>,那么它<b>永远不会出现在 JSON 里</b>;而 OpenAI 协议要求 tool_calls/tools 数组元素必须带 <code>"type":"function"</code>,缺了会被 DeepSeek 直接拒绝:</p>
+<pre><code>422 Unprocessable Entity: missing field `type`</code></pre>
+<p>这个坑出现了<b>两次</b>:阶段 1 的 <code>ToolDefinition.type</code> 和 Agent 闭环回灌时的 <code>ToolCall.type</code>。结论:<b>任何"会被我们重新编码发出"的协议必填字段,都不能带默认值。</b>源码里的注释连报错原文都记下来了:</p>
+<pre><code>/**
+ * ⚠️ [type] 故意不设默认值(与 ToolDefinition.type 同理):
+ * Json 配置 encodeDefaults=false 会跳过"值等于默认值"的字段 ——
+ * Agent 闭环把 tool_calls 回灌给模型时,tool_calls 里缺 `"type":"function"`
+ * 会被服务端直接 422 拒绝(实测 DeepSeek:"missing field `type`")。
+ */</code></pre>
+<p>调试技巧(来自实战):OkHttp 开着 BODY 级日志,422 的响应体里会直接说明缺哪个字段,logcat 一抓就有。</p></div>
+
+<h4>4.1.2 EmbeddingModels.kt —— JsonElement 承载"双形态"字段</h4>
+<pre><code>@Serializable
+data class EmbeddingRequest(
+    val model: String,
+    val input: JsonElement,   // 协议规定可为字符串或字符串数组
+) {
+    companion object {
+        fun ofText(model: String, text: String): EmbeddingRequest =
+            EmbeddingRequest(model, JsonPrimitive(text))
+        fun ofTexts(model: String, texts: List&lt;String&gt;): EmbeddingRequest =
+            EmbeddingRequest(model, JsonArray(texts.map { JsonPrimitive(it) }))
+    }
+}</code></pre>
+<p>要点:用 <code>JsonElement</code> 而不是 <code>Any</code>,kotlinx.serialization 才能正确分派序列化器;工厂方法让调用点语义清晰。</p>
+
+<h4>4.1.3 LlmApiService.kt —— 运行时切换 Base URL 的经典解法</h4>
+<pre><code>interface LlmApiService {
+    /** 对话补全(请求带 tools,响应里可能返回 tool_calls) */
+    @POST
+    suspend fun chatCompletion(@Url url: String, @Body request: ChatRequest): ChatResponse
+
+    /** 文本嵌入(用于 RAG) */
+    @POST
+    suspend fun embedding(@Url url: String, @Body request: EmbeddingRequest): EmbeddingResponse
+}</code></pre>
+<p><b>为什么是完整 @Url 而不是相对路径?</b>Retrofit 的 <code>baseUrl</code> 一旦 build 就不可变,而本项目要在设置页运行时切换 DeepSeek / Qwen / 自定义地址 —— 于是接口层收完整地址,由 LlmClient 拼接、Retrofit 的 baseUrl 仅作占位。鉴权也不在接口层,由 OkHttp 拦截器在<b>请求时刻</b>动态加。</p>
+
+<h4>4.1.4 LlmClient.kt —— 上层只依赖它,不直接碰 Retrofit</h4>
+<pre><code>@Singleton
+class LlmClient @Inject constructor(
+    private val api: LlmApiService,
+    private val settingsRepository: SettingsRepository,
+) {
+    suspend fun chat(messages: List&lt;ChatMessage&gt;, tools: List&lt;ToolDef&gt;? = null): ChatResponse {
+        val settings = settingsRepository.settings.value   // ← 每次请求都读最新配置
+        requireApiKey(settings)
+
+        val request = ChatRequest(
+            model = settings.chatModel,
+            messages = messages,
+            // 空列表等价于"没有工具":直接省略字段,避免部分服务端对 "tools": [] 报错
+            tools = tools?.takeIf { it.isNotEmpty() }?.map { it.toToolDefinition() },
+            temperature = LlmConfig.DEFAULT_TEMPERATURE,
+        )
+        return api.chatCompletion(buildUrl(settings.baseUrl, "chat/completions"), request)
+    }
+
+    /** 拼接完整地址(baseUrl 容错:有无结尾斜杠均可) */
+    private fun buildUrl(baseUrl: String, path: String): String = baseUrl.trimEnd('/') + "/" + path
+
+    /** 提前给出清晰报错,而不是等服务端返回 401 */
+    private fun requireApiKey(settings: LlmSettings) {
+        check(settings.isApiKeyConfigured) { "API Key 为空:请先在设置中配置" }
+    }
+}</code></pre>
+<p>三个可迁移的设计手法:① <b>请求时刻读配置</b> → 设置即时生效;② <code>takeIf { it.isNotEmpty() }</code> → 空工具列表彻底不发字段;③ <code>check()</code> 提前失败 → 用户看到的是"请先配置 API Key"而不是懵的 401。</p>
+
+<h3>4.2 本地持久层(data/local)</h3>
+
+<h4>4.2.1 TaskFlowDatabase.kt —— 5 个版本 + 4 条增量迁移</h4>
+<pre><code>@Database(
+    entities = [TaskEntity::class, StepEntity::class, KnowledgeEntity::class, AlarmEntity::class],
+    version = 5,
+    exportSchema = true,          // → app/schemas/*.json 导出,迁移正确性的唯一依据
+)
+@TypeConverters(Converters::class)
+abstract class TaskFlowDatabase : RoomDatabase() { ... }
+
+companion object {
+    const val NAME = "taskflow.db"
+
+    /** v1 → v2:新增知识库表 */
+    val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("""CREATE TABLE IF NOT EXISTS `knowledge` (...)""".trimIndent())
+        }
+    }
+    /** v2 → v3:任务表新增 answer 列(大模型真实回答) */
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `tasks` ADD COLUMN `answer` TEXT")
+        }
+    }
+    /** v3 → v4:新增闹钟登记表 */
+    val MIGRATION_3_4 = object : Migration(3, 4) { ... }
+    /** v4 → v5:步骤表新增 toolCallId(Agent 闭环的协议配对) */
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `steps` ADD COLUMN `toolCallId` TEXT")
+        }
+    }
+}</code></pre>
+<div class="tip"><b>迁移的正确姿势:</b>①②两条都成立才算对 —— ① SQL 必须与实体定义一致(Room 运行时用 schema JSON 校验,不一致直接抛 IllegalStateException);② <code>ALTER TABLE ADD COLUMN</code> 对可空列<b>不能加 NOT NULL、不能带 DEFAULT</b>(answer/toolCallId 都是 String?,加 NOT NULL 无默认值 SQLite 直接报错)。枚举列则统一由 <code>Converters</code> 以 TEXT 存取,其中 PendingType 的转换器特意保留可空签名(null = 未挂起)。</div>
+
+<h4>4.2.2 StepEntity.kt —— "恢复语义"三字段(状态机的持久化载体)</h4>
+<pre><code>enum class StepStatus { PENDING, RUNNING, WAITING_USER, SUCCESS, FAILED }   // 比任务多 WAITING_USER
+enum class PendingType { CONFIRMATION, PERMISSION }
+
+@Entity(tableName = "steps",
+    foreignKeys = [ForeignKey(entity = TaskEntity::class, parentColumns = ["id"],
+        childColumns = ["taskId"], onDelete = ForeignKey.CASCADE)],
+    indices = [Index("taskId")])
+data class StepEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val taskId: Long,
+    val toolName: String,                 // 如 send_sms
+    val argumentsJson: String,            // LLM 生成的参数 JSON
+    val status: StepStatus = StepStatus.PENDING,
+    val resultMessage: String? = null,    // 结果/挂起提示(给人看的文案)
+    val orderIndex: Int,                  // 执行顺序,由 LLM 规划顺序决定
+    val pendingType: PendingType? = null, // ① 在等什么
+    val pendingData: String? = null,      // ② 等哪些权限(PERMISSION 时为权限列表 JSON)
+    val confirmed: Boolean = false,       // ③ 用户是否已确认过(跨中断/跨进程持久化)
+    val toolCallId: String? = null,       // Agent 闭环:回灌时的协议配对 id
+) {
+    fun pendingPermissions(): List&lt;String&gt; =
+        pendingData?.let {
+            runCatching { Json.decodeFromString&lt;List&lt;String&gt;&gt;(it) }.getOrDefault(emptyList())
+        } ?: emptyList()
+}</code></pre>
+<div class="why"><b>为什么这三个字段必须落库(源码注释原话):</b>"Worker 是无状态的,进程可能被杀,恢复时必须知道 ①在等什么 ②等哪些权限 ③用户是否已确认过。" —— 它们是「中断/恢复」能力从内存走进数据库的关键。另外外键 CASCADE 让"删任务自动删步骤";<code>pendingPermissions()</code> 用 runCatching 容错解析,损坏数据退化为空列表而不崩溃。</div>
+
+<h4>4.2.3 KnowledgeEntity.kt —— ByteArray 字段的经典陷阱</h4>
+<pre><code>@Entity(tableName = "knowledge")
+data class KnowledgeEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val instruction: String,          // 历史指令(检索 key)
+    val toolSequenceJson: String,     // [{"tool":"set_alarm","arguments":"{...}"}, ...]
+    val embedding: ByteArray,         // 向量(Room BLOB)
+) {
+    // ByteArray 作为 data class 字段必须手写 equals/hashCode,否则按引用比较
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is KnowledgeEntity) return false
+        return id == other.id &amp;&amp; instruction == other.instruction &amp;&amp;
+            toolSequenceJson == other.toolSequenceJson &amp;&amp;
+            embedding.contentEquals(other.embedding)     // ← 内容比较
+    }
+    override fun hashCode(): Int { ... embedding.contentHashCode() ... }
+}</code></pre>
+<p><b>Kotlin 经典陷阱:</b>编译器为 data class 生成的 equals 对数组字段用引用比较 <code>==</code>,"内容相同但对象不同"会被判为不等;必须改用 <code>contentEquals</code> / <code>contentHashCode</code>。这与 Room 的 BLOB 存储、协程缓存判等都会相互作用,属于必修课。</p>
+
+<h4>4.2.4 TaskWithSteps.kt —— @Relation 不保证顺序</h4>
+<pre><code>data class TaskWithSteps(
+    @Embedded val task: TaskEntity,
+    @Relation(parentColumn = "id", entityColumn = "taskId")
+    val steps: List&lt;StepEntity&gt;,
+) {
+    /** Room 的 @Relation 不保证顺序,统一从这里按 orderIndex 取有序步骤 */
+    val orderedSteps: List&lt;StepEntity&gt; get() = steps.sortedBy { it.orderIndex }
+}</code></pre>
+<p>所有 UI/执行侧展示步骤,一律用 <code>orderedSteps</code> —— 这是本项目对"框架不保证的事自己保证"的一个微小但必要的收口。</p>
+
+<h4>4.2.5 DAO 层的三个亮点</h4>
+<p><b>① Flow + @Transaction + @Relation 三件套(实时 UI 的根):</b></p>
+<pre><code>/**
+ * UI 实时观察入口:任务列表 + 每个任务的步骤。
+ * Room 的 InvalidationTracker 会在 tasks/steps 任意一行变化时自动重新查询并发射,
+ * UI 无需轮询 —— 这就是"状态变化实时可见"的实现方式。
+ */
+@Transaction
+@Query("SELECT * FROM tasks ORDER BY id DESC")
+fun observeAllWithSteps(): Flow&lt;List&lt;TaskWithSteps&gt;&gt;</code></pre>
+<p><b>② pause() 单条 UPDATE 原子写四字段(响应式 UI 的一致性防线):</b></p>
+<pre><code>/**
+ * 挂起:单条 UPDATE 原子写入"状态 + 挂起原因 + 挂起细节 + 提示文案"。
+ * 原子性保证 Flow 观察者不会看到中间态(如已 WAITING_USER 但 pendingType 还是旧的)。
+ */
+@Query("""
+    UPDATE steps
+    SET status = :status, pendingType = :type, pendingData = :data, resultMessage = :message
+    WHERE id = :id
+""")
+suspend fun pause(id: Long, status: StepStatus, type: PendingType?, data: String?, message: String?)</code></pre>
+<p>如果拆成多条 UPDATE,Flow 会在中间态发射一次,UI 可能闪出一个"半成品"状态。这类"多字段状态变更必须原子"的思维,在响应式架构里是硬要求。</p>
+<p><b>③ 结构化的增量接口:</b>StepDao 还有 <code>clearPending</code>(清挂起标记)、<code>markConfirmed</code>(confirmed=1);KnowledgeDao 还有 <code>deleteByInstruction</code>(同指令去重)、<code>updateEmbedding</code>(维度自愈回写)。都是"把业务语义写进 DAO"的示范 —— SQL 层就是业务层的一部分。</p>
+
+<h3>4.3 仓库层:TaskRepository —— 全项目最长的单函数</h3>
+<p><code>submitInstruction()</code> 是"一句话变成一条后台执行链"的全过程,建议逐行精读:</p>
+<pre><code>suspend fun submitInstruction(instruction: String): Long {
+    // 1. 先落库一个 PENDING 任务 —— 哪怕随后进程死掉,任务也不会丢
+    val taskId = taskDao.insert(TaskEntity(instruction = instruction,
+        createdAt = System.currentTimeMillis(), status = TaskStatus.PENDING))
+
+    // 2. RAG:检索相似历史 → 与基础指令拼成带 Few-Shot 的规划提示词
+    val history = knowledgeRepository.retrieveSimilar(instruction)
+    val systemPrompt = PromptBuilder.buildPlannerPrompt(history)
+
+    // 3. 调 LLM 规划
+    val response = try {
+        llmClient.chat(
+            messages = listOf(
+                ChatMessage(role = "system", content = systemPrompt),
+                ChatMessage(role = "user", content = instruction),
+            ),
+            tools = toolRegistry.toolDefs(),
+        )
+    } catch (e: CancellationException) {
+        throw e                                   // ← 协程取消必须重抛,不能被吞
+    } catch (e: Exception) {
+        // 防呆:规划失败不能把任务留在"待执行"里当孤儿 → 标 FAILED 并把原因写进 answer
+        taskDao.setAnswer(taskId, "模型规划失败:${e.message ?: "未知错误"}")
+        taskDao.updateStatus(taskId, TaskStatus.FAILED)
+        throw e                                   // 继续抛给 UI 弹 Snackbar
+    }
+
+    val assistantMessage = response.choices.firstOrNull()?.message
+    val toolCalls = assistantMessage?.toolCalls.orEmpty()
+
+    // 4. 保存大模型的文本回答(无需工具时=完整回答;触发工具时=开场话术)
+    assistantMessage?.content?.takeIf { it.isNotBlank() }?.let { taskDao.setAnswer(taskId, it) }
+
+    // 5. 分支 A:无需工具 → 纯问答,带着回答直接完成
+    if (toolCalls.isEmpty()) {
+        taskDao.updateStatus(taskId, TaskStatus.SUCCESS)
+        return taskId
+    }
+
+    // 6. 分支 B:每个 tool_call 落库为一个步骤(orderIndex=顺序,toolCallId=协议配对)
+    stepDao.insertAll(toolCalls.mapIndexed { index, call ->
+        StepEntity(taskId = taskId, toolName = call.function.name,
+            argumentsJson = call.function.arguments, orderIndex = index, toolCallId = call.id)
+    })
+
+    // 7. 入队 Worker 开始后台执行
+    enqueue(taskId, TaskExecutionWorker.request(taskId))
+    return taskId
+}
+
+private fun enqueue(taskId: Long, request: OneTimeWorkRequest) {
+    // 每个任务一条串行工作链:同名请求按加入顺序执行(APPEND_OR_REPLACE),
+    // 不会出现两个 Worker 并发推进同一个任务。
+    workManager.enqueueUniqueWork("task-execution-$taskId",
+        ExistingWorkPolicy.APPEND_OR_REPLACE, request)
+}</code></pre>
+<div class="tip"><b>四个值得背下来的手法:</b>① <b>先落库后规划</b>(任务永不丢);② <b>CancellationException 先单独重抛</b>(协程正确性);③ <b>规划失败→FAILED+原因</b>(防孤儿任务,这条是后来修复真实 bug 加的,见 §11.15);④ <b>唯一工作名 + APPEND_OR_REPLACE</b>(同任务串行、天然防并发)。</div>
+
+<h3>4.4 配置:SettingsRepository + LlmSettings</h3>
+<p><b>为什么要内存镜像?</b>源码注释给出了答案:"OkHttp 拦截器与 LlmClient 在<b>请求时刻</b>需要同步读取最新配置(API Key / Base URL),不能 suspend 去读 DataStore;这里用 app 级协程把 DataStore 流镜像到内存 StateFlow,读写都是即时的,持久化由 DataStore 保证。"</p>
+<pre><code>@Singleton
+class SettingsRepository @Inject constructor(
+    private val dataStore: DataStore&lt;Preferences&gt;,
+    @param:ApplicationScope private val scope: CoroutineScope,   // ← 注意 @param: 前缀!
+) {
+    private val _settings = MutableStateFlow(LlmSettings())
+    val settings: StateFlow&lt;LlmSettings&gt; = _settings.asStateFlow()
+
+    init {
+        // app 生命周期级别的镜像:DataStore → 内存(单向,只有这一条写入路径)
+        scope.launch { dataStore.data.collect { prefs -> _settings.value = prefs.toLlmSettings() } }
+    }
+    suspend fun update(apiKey: String, provider: LlmProvider, baseUrl: String) { /* dataStore.edit */ }
+}</code></pre>
+<div class="pit"><b>踩坑 · Hilt 限定符的 use-site target:</b><code>@ApplicationScope</code> 是自定义 @Qualifier,直接写在 <code>private val scope</code> 上时 Kotlin 可能把它应用到"属性"而非"构造参数",导致 Hilt 解析失败。写 <code>@param:ApplicationScope</code> 明确指向构造参数才是正确姿势。同理还有 <code>@param:Named</code> / <code>@param:ApplicationContext</code>(见 §9.1)。</div>
+<p><b>转换容错:</b><code>toLlmSettings()</code> 里枚举用 <code>runCatching { LlmProvider.valueOf(it) }.getOrNull()</code> 包裹(损坏数据不致崩溃);<code>baseUrl</code> 缺省时按服务商动态推导默认值。另外注意 <code>LlmSettings</code> 的 <code>chatModel</code> / <code>embeddingModel</code> 是<b>计算属性</b> —— 随 provider 动态变化,不入库,天然避免"换服务商忘改模型名"。</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 5 章 -->
+<!-- ============================================================ -->
+<section id="s5">
+<h2>5 · 领域层精讲:工具系统与 Agent</h2>
+
+<h3>5.1 工具契约五件套(domain/tool)</h3>
+
+<h4>5.1.1 Tool.kt —— 契约接口</h4>
+<pre><code>interface Tool {
+    /** 工具名,蛇形命名(与 OpenAI Function Calling 惯例一致),如 send_sms */
+    val name: String
+    /** 用途说明,LLM 依据它决定何时调用 */
+    val description: String
+    /** 参数的标准 JSON Schema,Registry 会解析后按 OpenAI tools 格式随请求发送 */
+    val parametersSchema: String
+    /** 该工具需要的 Android 运行时权限(声明式;执行时逐一预检,不足则返回 RequiresPermission) */
+    val requiredPermissions: List&lt;String&gt;
+    suspend fun execute(args: JSONObject, context: ToolContext): ToolResult
+}</code></pre>
+<p>三个设计要点:① <b>定义与执行分离</b>(元数据给 LLM 看,execute 给引擎跑);② <b>requiredPermissions 是声明式的</b> —— 工具自己不弹权限框,只声明需求,"申请"这件事由上层(引擎→UI)决定;③ <b>工具永远拿不到 Activity</b>,系统能力只能走 ToolContext 这一道闸。</p>
+
+<h4>5.1.2 ToolResult.kt —— 四结局密封类(全项目的哲学基石)</h4>
+<pre><code>sealed class ToolResult {
+    /** 执行成功。message 给用户/LLM 读的自然语言结果 */
+    data class Success(val message: String, val data: Any? = null) : ToolResult()
+
+    /** 执行失败(参数错误、系统拒绝、IO 异常等) */
+    data class Failure(val error: String) : ToolResult()
+
+    /** 缺少运行时权限:返回需要的权限列表,由上层决定何时/如何申请,工具本身不弹窗 */
+    data class RequiresPermission(val permissions: List&lt;String&gt;) : ToolResult()
+
+    /** 敏感操作需要用户确认:prompt 是给用户看的确认文案 */
+    data class RequiresUserConfirmation(val prompt: String) : ToolResult()
+}</code></pre>
+<div class="why"><b>类注释里藏着整条状态机的设计哲学:</b>"后两个状态不是'失败',而是 agent 循环中的<b>正常控制信号</b> —— 缺权限 → 上层去发起权限申请;需确认 → 上层弹 UI 让用户拍板。<b>所以它们绝不能用异常(throw)表达:异常意味着意外,而这里是预设好的流程。</b>" 这段话说清了"为什么要用密封类返回值做控制流"。用 <code>when</code> 穷尽四分支时,编译器还会强制你处理将来新增的第五种结局。</div>
+
+<h4>5.1.3 ToolContext.kt —— 系统能力的唯一安全入口</h4>
+<pre><code>@Singleton
+class ToolContext private constructor(
+    private val appContext: Context,
+    private val confirmedTools: Set&lt;String&gt;,   // 已获用户确认的工具名集合
+) {
+    @Inject
+    constructor(@ApplicationContext appContext: Context) : this(appContext, emptySet())
+
+    /** 安全启动系统界面:自动补 NEW_TASK;目标不存在/被厂商策略拒绝时返回 false,不让调用方崩溃 */
+    fun startActivitySafely(intent: Intent): Boolean = try {
+        appContext.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        true
+    } catch (e: ActivityNotFoundException) { false }
+      catch (e: SecurityException) { false }
+
+    fun isConfirmed(toolName: String): Boolean = toolName in confirmedTools
+
+    /** 生成"已确认该工具"的新上下文(用户点确认后重试时使用) */
+    fun withConfirmation(toolName: String): ToolContext =
+        ToolContext(appContext, confirmedTools + toolName)
+}</code></pre>
+<p>两个技巧:① <b>主构造 private + 二级 @Inject 构造</b> —— 外部只能拿到"干净实例",带确认状态的实例必须走 <code>withConfirmation</code> 生成,把"确认"变成一种不可伪造的能力;② 捕获 <code>SecurityException</code> 是国产 ROM 实战经验(部分厂商系统应用要求调用方持有特定权限)。</p>
+
+<h4>5.1.4 ToolRegistry.kt —— 注册中心与统一执行入口</h4>
+<pre><code>@Singleton
+class ToolRegistry @Inject constructor(
+    private val tools: Set&lt;@JvmSuppressWildcards Tool&gt;,   // Hilt 多绑定集合注入
+) {
+    private val byName: Map&lt;String, Tool&gt; = tools.associateBy { it.name }
+
+    init {
+        // 名字是 LLM 调用工具的唯一钥匙,重复会静默覆盖,属于开发期错误,直接暴露
+        require(byName.size == tools.size) {
+            "存在重名工具:${tools.groupBy { it.name }.filterValues { it.size > 1 }.keys}"
+        }
+    }
+
+    suspend fun execute(name: String, argumentsJson: String, context: ToolContext): ToolResult {
+        val tool = byName[name] ?: return ToolResult.Failure("未注册的工具:$name")   // ← 防模型幻觉
+        return try {
+            val args = if (argumentsJson.isBlank()) JSONObject() else JSONObject(argumentsJson)
+            tool.execute(args, context)
+        } catch (e: CancellationException) {
+            throw e                                    // ← 协程取消必须放行
+        } catch (e: Exception) {
+            ToolResult.Failure("工具 $name 执行异常:${e.message}")
+        }
+    }
+}</code></pre>
+<p>三个防线:① <b>重名检测</b>(开发期错误立刻暴露);② <b>未注册工具返回 Failure 而非崩溃</b>(模型可能幻觉出不存在的工具名);③ <b>异常兜底但仍放行 CancellationException</b>。配合各工具内部的 try/catch,构成双层防护。</p>
+
+<h3>5.2 七个工具逐个精讲(domain/tool/impl)</h3>
+<table>
+<tr><th>工具</th><th>函数名</th><th>权限</th><th>一句话</th></tr>
+<tr><td>SetAlarmTool</td><td>set_alarm</td><td>SCHEDULE_EXACT_ALARM(31+)/POST_NOTIFICATIONS(33+)</td><td>设置 TaskFlow 自持闹钟</td></tr>
+<tr><td>CancelAlarmTool</td><td>cancel_alarm</td><td>—</td><td>按 all/time/label 取消自持闹钟</td></tr>
+<tr><td>QueryAlarmsTool</td><td>query_alarms</td><td>—</td><td>只读列举自持闹钟</td></tr>
+<tr><td>OpenAppTool</td><td>open_app</td><td>—</td><td>中文名模糊匹配打开其他应用</td></tr>
+<tr><td>AddCalendarEventTool</td><td>add_calendar_event</td><td>WRITE_CALENDAR</td><td>写系统日历</td></tr>
+<tr><td>SendSmsTool</td><td>send_sms</td><td>SEND_SMS</td><td>双闸门样本:确认 + 权限</td></tr>
+<tr><td>SearchWeatherTool</td><td>search_weather</td><td>—</td><td>Open-Meteo 真实天气</td></tr>
+</table>
+
+<h4>5.2.1 SendSmsTool —— 双闸门(敏感操作的标准模板)</h4>
+<pre><code>override suspend fun execute(args: JSONObject, context: ToolContext): ToolResult {
+    val number = args.optString("number").trim()
+    val message = args.optString("message").trim()
+    if (number.isEmpty() || message.isEmpty()) return ToolResult.Failure("参数不完整:需要 number 和 message")
+
+    // 闸一:敏感操作必须经用户确认(第一次执行必然走到这里)
+    if (!context.isConfirmed(name)) {
+        return ToolResult.RequiresUserConfirmation("即将向「$number」发送短信:「$message」。确认发送吗?")
+    }
+    // 闸二:系统权限预检
+    if (!requiredPermissions.all { context.hasPermission(it) }) {
+        return ToolResult.RequiresPermission(requiredPermissions)
+    }
+    // 双闸通过,真实发送
+    return try {
+        @Suppress("DEPRECATION")
+        context.smsManager().sendTextMessage(number, null, message, null, null)
+        ToolResult.Success("短信已发送至 $number")
+    } catch (e: Exception) { ToolResult.Failure("短信发送失败:${e.message}") }
+}</code></pre>
+<p><b>为什么确认在前、权限在后?</b>先让用户看到"要发什么",再谈系统授权 —— 逻辑与体验都更顺;另外 schema 里注明"若用户只给称呼(如'妈妈')直接填称呼,发送前会有人工确认兜底" —— 用确认闸吸收号码解析的不确定性。</p>
+
+<h4>5.2.2 CancelAlarmTool —— 一条"绝不默认全取消"的安全防线</h4>
+<pre><code>// 安全防线:未给任何条件时绝不"默认全取消"(防止模型误调用清空用户全部闹钟)
+if (!cancelAll &amp;&amp; time.isEmpty() &amp;&amp; label.isEmpty()) {
+    return ToolResult.Failure(
+        "未指定取消条件。如需取消全部请传 all=true;当前 TaskFlow 闹钟:" +
+            allAlarms.joinToString("、") { describe(it) }
+    )
+}</code></pre>
+<p>背景:最初版本"空参数 = 全取消",真实使用中意识到模型完全可能漏参误调用,加上了这条防线,并把"当前闹钟清单"回带给 LLM —— <b>失败信息带上下文,让模型有机会自我纠正参数重试</b>。label 匹配用"包含 + 忽略大小写"。</p>
+
+<h4>5.2.3 OpenAppTool —— 中文名模糊匹配(真机验证最惊艳的一个)</h4>
+<pre><code>/** 归一化:去空格/小写/去掉"app、应用、软件"等后缀 */
+private fun normalize(name: String): String =
+    name.lowercase().replace(" ", "")
+        .removeSuffix("app").removeSuffix("应用").removeSuffix("软件")
+
+/** 匹配优先级:完全相等 > 标签以查询开头 > 查询以标签开头 > 包含;同级取标签更短者 */
+private fun findBest(query: String, apps: List&lt;AppEntry&gt;): AppEntry? {
+    val normalized = apps.map { it to it.label.lowercase().replace(" ", "") }
+    val byPriority: List&lt;List&lt;AppEntry&gt;&gt; = listOf(
+        normalized.filter { (_, label) -> label == query }.map { it.first },
+        normalized.filter { (_, label) -> label.startsWith(query) }.map { it.first },
+        normalized.filter { (_, label) -> query.startsWith(label) }.map { it.first },
+        normalized.filter { (_, label) -> label.contains(query) }.map { it.first },
+    )
+    return byPriority.firstOrNull { it.isNotEmpty() }?.minByOrNull { it.label.length }
+}</code></pre>
+<p>配套要点:① 枚举用 <code>queryIntentActivities(ACTION_MAIN + CATEGORY_LAUNCHER)</code>,API 33+ 走 <code>ResolveInfoFlags.of(0L)</code>;② Manifest 的 <code>&lt;queries&gt;</code> 声明 MAIN/LAUNCHER 解决 Android 11+ 包可见性(<b>合规做法,无需 Play 受限的 QUERY_ALL_PACKAGES</b>);③ 启动零权限,失败时提示"你是不是想打开:xx、yy"。真机实测:"打开天气APP" → 华为天气弹出。</p>
+
+<h4>5.2.4 SetAlarmTool / AddCalendarEventTool / SearchWeatherTool 要点</h4>
+<ul>
+<li><b>SetAlarmTool:</b>SCHEDULE_EXACT_ALARM 是<b>特殊权限</b>,检查方式不是 checkSelfPermission 而是 <code>alarmManager.canScheduleExactAlarms()</code>(API 31+);时间格式严格校验 HH:mm;执行末尾格式化回执"将于 MM-dd HH:mm 响铃"。</li>
+<li><b>AddCalendarEventTool:</b>权限预检统一走 <code>requiredPermissions.all { context.hasPermission(it) }</code> 模板;ContentValues 带 EVENT_TIMEZONE;IO 走 <code>withContext(Dispatchers.IO)</code>,insert 返回 null → "未找到可写日历"。</li>
+<li><b>SearchWeatherTool:</b>两步查询(geocoding → forecast),中文城市名 URLEncoder 编码 + <code>language=zh</code>;WMO 天气码→中文映射;<b>网络失败时返回真实错误信息,绝不回退模拟数据</b>;响应 DTO 用 @SerialName 做下划线映射 + ignoreUnknownKeys。</li>
+</ul>
+
+<h3>5.3 PromptBuilder —— 规划提示词与 Token 三层防御</h3>
+<p>基础提示词全文(注意它承担的四个职责):</p>
+<pre><code>private fun buildBasePrompt(): String {
+    val now = SimpleDateFormat("yyyy-MM-dd HH:mm(EEEE)", Locale.CHINA).format(Date())
+    return "你是 TaskFlow AI 助手:能把任务指令拆解为按顺序执行的工具调用序列,也能回答普通问题。" +
+        "当前时间:$now。涉及闹钟(设置 set_alarm / 取消 cancel_alarm,如'关掉所有闹钟'/ 查询 query_alarms,如'我有哪些闹钟')、" +
+        "日历、短信、天气、打开其他应用(open_app,如'打开天气')的请求必须调用对应工具,不要凭空回答。" +
+        "如果指令包含多个动作(例如'先…再…'、'然后…'),必须为每个动作分别生成一个工具调用步骤,不得合并或省略。" +
+        "用户只提供联系人称呼而未给号码时,number 参数直接填称呼即可(发送前有人工确认)。" +
+        "如果指令不需要任何工具(如闲聊、问答、解释概念等),不要调用工具,直接用自然语言简洁、准确地回答。"
+}</code></pre>
+<p>① 注入当前时间(闹钟的"明天/下一个"依赖它);② 枚举"必须调工具"的场景;③ 多动作必须拆多步;④ 无工具时直接回答(对应"answer 直答"路径)。</p>
+<p><b>RAG Few-Shot 注入 + 三层 Token 防御:</b></p>
+<pre><code>fun buildPlannerPrompt(history: List&lt;KnowledgeEntity&gt;): String {
+    val base = buildBasePrompt()
+    if (history.isEmpty()) return base
+
+    val builder = StringBuilder(base)
+    builder.append("\n\n【历史相似任务(用户过往偏好,如与当前指令相关请沿用其中参数与工具选择)】\n")
+
+    var usedChars = 0
+    var truncated = false
+    for (record in history) {
+        val line = formatFewShot(record)                 // "User: ... -> Assistant: 调用了 set_alarm({...})"
+        if (usedChars + line.length > CHAR_BUDGET) {     // CHAR_BUDGET = 2000
+            truncated = true
+            break
+        }
+        builder.append(line).append('\n')
+        usedChars += line.length
+    }
+    if (truncated) builder.append("(更多历史因长度限制已省略)\n")   // ← 显式标注,绝不无声截断
+    return builder.toString()
+}</code></pre>
+<div class="why"><b>设计原话:</b>"超预算立即停止追加并<b>显式标注</b>'(更多历史已省略)',绝不'无声截断'(静默丢上下文会让模型行为变得不可解释)。" 防御三层 = 条数上限(Top 3)+ 单行限长(320 字符)+ 总量预算(2000 字符)。</div>
+
+<h3>5.4 RAG 三件套:数学、向量化、检索</h3>
+
+<h4>5.4.1 VectorMath.kt —— 单趟余弦相似度</h4>
+<pre><code>fun FloatArray.cosineSimilarity(other: FloatArray): Float {
+    if (size != other.size || isEmpty()) return 0f
+    var dot = 0f; var normA = 0f; var normB = 0f
+    for (i in indices) {
+        val a = this[i]; val b = other[i]
+        dot += a * b; normA += a * a; normB += b * b
+    }
+    val denominator = sqrt(normA) * sqrt(normB)
+    return if (denominator <= 0f) 0f else dot / denominator
+}
+
+/** FloatArray → ByteArray(存入 Room BLOB) */
+fun FloatArray.toByteArray(): ByteArray {
+    val buffer = ByteBuffer.allocate(size * Float.SIZE_BYTES)
+    buffer.asFloatBuffer().put(this)
+    return buffer.array()
+}</code></pre>
+<p>① <b>单趟循环</b>同时累加点积与两个模长(朴素实现要遍历三趟,1024/1536 维时收益明显);② 维度不等/空 → 返回 0f(不抛异常);③ 反序列化时 <code>size % 4 != 0</code> 视为非法返回空数组 —— 所以<b>向量维度可由字节长度推导(size/4),无需额外字段</b>,这是维度自愈的判据基础。</p>
+
+<h4>5.4.2 LocalEmbedder.kt —— DeepSeek 无 embeddings 时的离线兜底</h4>
+<pre><code>object LocalEmbedder {
+    const val DIMENSION = 256           // 向量维度
+    private const val BIGRAM_WEIGHT = 1.5f
+
+    fun embed(text: String): FloatArray {
+        val vector = FloatArray(DIMENSION)
+        val normalized = text.lowercase().filterNot { it.isWhitespace() }
+        for (char in normalized) vector[hash(char.toString()) % DIMENSION] += 1f
+        for (i in 0 until normalized.length - 1)
+            vector[hash(normalized.substring(i, i + 2)) % DIMENSION] += BIGRAM_WEIGHT
+        // L2 归一化:让余弦相似度与文本长度无关
+        ...
+    }
+
+    /** FNV-1a 哈希:实现简单、分布均匀 */
+    private fun hash(token: String): Int {
+        var h = -2128831035        // FNV offset basis 2166136261 的有符号写法
+        for (c in token) { h = h xor c.code; h *= 16777619 }
+        return h and 0x7FFFFFFF
+    }
+}</code></pre>
+<p>算法:字符 unigram(权重 1.0)+ bigram(权重 1.5,顺序信息更强)经 FNV-1a 哈希投到 256 维,最后 L2 归一化。<b>"明天早上7点的闹钟"与"明天早上8点的闹钟"相似度很高</b> —— 足以支撑"重复模式学习"这一核心场景,且纯离线、确定性(同一文本永远同向量)。局限也写明:无法理解同义改写与指代,那类语义检索要切 Qwen 的真实 embedding。</p>
+
+<h4>5.4.3 KnowledgeRepository.retrieveSimilar —— 检索全流程</h4>
+<pre><code>suspend fun retrieveSimilar(query: String): List&lt;KnowledgeEntity&gt; =
+    withContext(Dispatchers.Default) {              // 计算密集,不阻塞 UI
+        val all = knowledgeDao.getAll()
+        if (all.isEmpty()) return@withContext emptyList()
+
+        val query = embedDetailed(query)            // 远端优先,失败回退本地(带来源标记)
+        val queryVector = query.vector
+
+        // ===== 维度安全:切换服务商后(如本地 256 维 ↔ Qwen 1024 维)旧向量无法比较 =====
+        var reEmbedded = 0; var skipped = 0
+        val comparable = all.mapNotNull { record ->
+            val stored = record.embedding.toFloatArray()
+            when {
+                stored.size == queryVector.size -> record to stored
+                query.fromRemote &amp;&amp; reEmbedded &lt; MAX_REEMBED_PER_QUERY -> {
+                    val fresh = embedDetailed(record.instruction)      // 用当前引擎重新嵌入
+                    if (fresh.vector.size == queryVector.size) {
+                        knowledgeDao.updateEmbedding(record.id, fresh.vector.toByteArray())  // 自愈回写
+                        reEmbedded++
+                        record to fresh.vector
+                    } else { skipped++; null }
+                }
+                else -> { skipped++; null }         // 本地回退向量:跳过不重写,避免污染远端向量
+            }
+        }
+
+        // 分片并行:chunk → async(Default 池) → awaitAll → 拉平
+        val scored = coroutineScope {
+            comparable.chunked(CHUNK_SIZE)          // CHUNK_SIZE = 16
+                .map { chunk -> async { chunk.map { (record, vector) -> record to queryVector.cosineSimilarity(vector) } } }
+                .awaitAll().flatten()
+        }
+
+        scored.filter { it.second >= SIMILARITY_THRESHOLD }   // 0.75
+            .sortedByDescending { it.second }
+            .take(MAX_CONTEXT)                                // Top 3
+            .map { it.first }
+    }</code></pre>
+<p><b>维度自愈的三个规则(注释原话):</b>① 维度一致 → 直接比较;② 查询向量来自<b>远端</b>且条数未超限流 → 用当前引擎重新嵌入并回写(一次性自愈,<code>MAX_REEMBED_PER_QUERY=20</code> 防止切换服务商后打爆网络);③ 查询向量来自<b>本地回退</b> → 跳过不重写("避免把远端向量污染成本地向量")。</p>
+
+<p><b>学习闭环 remember() 的"防污染三守卫":</b></p>
+<pre><code>suspend fun remember(taskId: Long) {
+    val task = taskDao.getById(taskId) ?: return
+    if (task.status != TaskStatus.SUCCESS) return                       // 守卫①任务必须成功
+    val steps = stepDao.getByTask(taskId)
+    if (steps.isEmpty() || steps.any { it.status != StepStatus.SUCCESS }) return  // 守卫②③步骤非空且全部成功
+
+    val vector = embedDetailed(task.instruction).vector
+    val toolsJson = buildJsonArray { steps.forEach { addJsonObject { put("tool", it.toolName); put("arguments", it.argumentsJson) } } }.toString()
+    knowledgeDao.deleteByInstruction(task.instruction)                  // 同指令只留最新
+    knowledgeDao.insert(KnowledgeEntity(instruction = task.instruction, toolSequenceJson = toolsJson, embedding = vector.toByteArray()))
+}</code></pre>
+<p>"失败、取消、挂起的任务绝不入库" —— 保证 Few-Shot 示例永远是正面样本;<code>deleteByInstruction + insert</code> 让重复指令只留最新一条,不占满 Top 3 名额。</p>
+
+<h3>5.5 TaskSummarizer —— Agent 闭环(结果回灌)</h3>
+<p>任务全部成功后,把执行记录按 OpenAI 协议配对后回灌大模型,让它生成"人话版"总结:</p>
+<pre><code>val messages = buildList {
+    add(ChatMessage(role = "system", content = SYSTEM_PROMPT))
+    add(ChatMessage(role = "user", content = task.instruction))
+    // assistant 的历史工具调用(协议要求与下面的 tool 结果按 id 一一配对)
+    add(ChatMessage(
+        role = "assistant",
+        content = task.answer,
+        toolCalls = steps.map { step ->
+            ToolCall(id = step.toolCallId ?: "call_${step.id}", type = "function",
+                function = FunctionCall(name = step.toolName, arguments = step.argumentsJson))
+        },
+    ))
+    // 各工具的执行结果
+    steps.forEach { step ->
+        add(ChatMessage(role = "tool", content = step.resultMessage ?: "(无结果)",
+            toolCallId = step.toolCallId ?: "call_${step.id}"))
+    }
+}
+// 不带 tools:让模型直接产出文本结论
+val text = llmClient.chat(messages).choices.firstOrNull()?.message?.content?.takeIf { it.isNotBlank() }</code></pre>
+<p>system prompt 原文:</p>
+<pre><code>val SYSTEM_PROMPT = "你是 TaskFlow AI 助手。用户的任务已由系统工具执行完毕,以下是完整的执行记录。" +
+    "请用简洁自然的中文向用户汇报最终结果(一到两句),关键信息(时间、温度、收件人、金额等)" +
+    "必须直接取自执行结果,不要编造,也不要输出协议细节。"</code></pre>
+<div class="tip"><b>三个协议细节:</b>① role="tool" 的消息必须携带 tool_call_id,且与 assistant.toolCalls 的 id <b>严格一一对应</b>(否则服务端 400);toolCallId 缺失时用 <code>"call_${step.id}"</code> 合成兜底。② 回灌请求<b>不带 tools</b>,模型只能输出文本。③ 任何失败(网络/协议)只记日志返回 null —— "任务此时已经成功,总结只是增益,绝不影响任务状态"。</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 6 章 -->
+<!-- ============================================================ -->
+<section id="s6">
+<h2>6 · 执行层精讲:中断/恢复状态机</h2>
+
+<h3>6.1 TaskExecutor.kt —— 全项目的心脏</h3>
+<p>类注释开篇即定调:&nbsp;<b>"引擎无内存状态,一切以 Room 为准"</b> —— 每推进一步都先把状态写库;遇到 RequiresXxx 就落库挂起标记后直接返回。因此进程被杀、Worker 结束都不会丢进度,恢复时从库里重建执行位置。</p>
+<p>中断语义与 ToolResult 一一对应(注释原文):</p>
+<pre><code>Success                  → 步骤 SUCCESS,继续下一步;
+Failure                  → 步骤 FAILED,任务 FAILED(终止);
+RequiresUserConfirmation → 步骤 WAITING_USER + 任务 PAUSED(等"确认");
+RequiresPermission       → 步骤 WAITING_USER + 任务 PAUSED(等"授权")。</code></pre>
+
+<h4>6.1.1 入口 executeTask —— 幂等起点</h4>
+<pre><code>suspend fun executeTask(taskId: Long) {
+    val task = taskDao.getById(taskId) ?: return
+    if (task.status == TaskStatus.SUCCESS || task.status == TaskStatus.FAILED) return   // 终态忽略
+    taskDao.updateStatus(taskId, TaskStatus.RUNNING)
+    runSteps(taskId)
+}</code></pre>
+
+<h4>6.1.2 resumeTask —— 状态守卫 + 批准后"解锁"</h4>
+<pre><code>suspend fun resumeTask(taskId: Long, stepId: Long, userApproved: Boolean) {
+    val step = stepDao.getById(stepId) ?: return
+    // 状态守卫:只有仍处于挂起态的步骤才响应"决定",重复/过期的决定直接忽略(幂等)
+    if (step.status != StepStatus.WAITING_USER) return
+
+    if (!userApproved) {
+        stepDao.updateStatus(stepId, StepStatus.FAILED, "用户已取消")
+        taskDao.updateStatus(taskId, TaskStatus.FAILED)
+        return
+    }
+
+    // 批准:
+    // 1) 确认类中断 → 持久化"已确认"标记(重放该步时携带 withConfirmation 上下文,
+    //    且该标记跨中断/跨进程有效,不会让用户被重复要求确认);
+    // 2) 权限类中断 → 用户已在系统层完成授权,直接清标记重放,执行时再做真实权限复查。
+    if (step.pendingType == PendingType.CONFIRMATION) stepDao.markConfirmed(stepId)
+    stepDao.clearPending(stepId)
+    stepDao.updateStatus(stepId, StepStatus.PENDING, null)
+
+    taskDao.updateStatus(taskId, TaskStatus.RUNNING)
+    runSteps(taskId)
+}</code></pre>
+<div class="why"><b>为什么重复点"允许"是安全的?</b>两层保险:① 本方法开头有<b>状态守卫</b>(非 WAITING_USER 直接忽略);② TaskRepository 用 <code>enqueueUniqueWork(APPEND_OR_REPLACE)</code> 串行化,两次决定不可能并发丢失。这就是"幂等"在协程 + 数据库架构里的具体写法。</div>
+
+<h4>6.1.3 runSteps 主干 —— 每一步的完整逻辑</h4>
+<pre><code>private suspend fun runSteps(taskId: Long) {
+    val steps = stepDao.getByTask(taskId)
+    for (step in steps) {
+        when (step.status) {
+            StepStatus.SUCCESS, StepStatus.FAILED -> continue
+            // 已完成/已终结:跳过(幂等重放的关键)
+            StepStatus.WAITING_USER -> {
+                // 还有未决的挂起(不该由普通执行越过),保持暂停
+                taskDao.updateStatus(taskId, TaskStatus.PAUSED)
+                return
+            }
+            StepStatus.PENDING, StepStatus.RUNNING -> Unit
+            // 可执行(曾执行到一半被杀掉的 RUNNING 也重新执行)← 崩溃自愈的关键设计
+        }
+
+        stepDao.updateStatus(step.id, StepStatus.RUNNING, null)   // 先写库,再执行
+        val context = if (step.confirmed) toolContext.withConfirmation(step.toolName) else toolContext
+        // ↑ 已确认过的步骤用"已确认"上下文重放 —— 这是两段式确认的落点
+
+        when (val result = toolRegistry.execute(step.toolName, step.argumentsJson, context)) {
+            is ToolResult.Success -> stepDao.updateStatus(step.id, StepStatus.SUCCESS, result.message)
+
+            is ToolResult.Failure -> {
+                stepDao.updateStatus(step.id, StepStatus.FAILED, result.error)
+                taskDao.updateStatus(taskId, TaskStatus.FAILED)
+                return
+            }
+
+            is ToolResult.RequiresUserConfirmation -> {
+                stepDao.pause(id = step.id, status = StepStatus.WAITING_USER,
+                    type = PendingType.CONFIRMATION, data = null, message = result.prompt)
+                taskDao.updateStatus(taskId, TaskStatus.PAUSED)
+                return
+            }
+
+            is ToolResult.RequiresPermission -> {
+                stepDao.pause(id = step.id, status = StepStatus.WAITING_USER,
+                    type = PendingType.PERMISSION,
+                    data = Json.encodeToString(result.permissions),
+                    message = "需要权限:${result.permissions.joinToString()}")
+                taskDao.updateStatus(taskId, TaskStatus.PAUSED)
+                return
+            }
+        }
+    }
+
+    // ===== 全部步骤完成:任务成功 + 双闭环 =====
+    taskDao.updateStatus(taskId, TaskStatus.SUCCESS)
+
+    // 学习闭环:仅"全部步骤成功"的任务入库;失败/取消/挂起中的任务不记录
+    knowledgeRepository.remember(taskId)
+
+    // Agent 闭环:把工具结果回灌大模型,生成自然语言总结(总结失败只记日志,绝不影响任务状态)
+    if (steps.isNotEmpty()) {
+        taskSummarizer.summarize(taskId)?.let { taskDao.setAnswer(taskId, it) }
+    }
+}</code></pre>
+
+<p><b>四分支差异汇总表:</b></p>
+<table>
+<tr><th>分支</th><th>步骤落库</th><th>任务落库</th><th>是否 return</th></tr>
+<tr><td>Success</td><td>SUCCESS + message</td><td>不动(继续循环)</td><td>否</td></tr>
+<tr><td>Failure</td><td>FAILED + error</td><td>FAILED(终止)</td><td>是</td></tr>
+<tr><td>RequiresUserConfirmation</td><td>pause → WAITING_USER / CONFIRMATION / data=null / message=prompt</td><td>PAUSED</td><td>是</td></tr>
+<tr><td>RequiresPermission</td><td>pause → WAITING_USER / PERMISSION / data=权限列表JSON / message="需要权限:…"</td><td>PAUSED</td><td>是</td></tr>
+</table>
+<div class="tip"><b>三个隐藏考点:</b>① <b>"RUNNING 也重新执行"</b> —— 步骤执行到一半进程被杀,恢复时该步重跑,这就是"崩溃自愈";② <b>恢复不是从头</b> —— SUCCESS 的步骤被 continue 跳过,从断点继续;③ <b>执行顺序 = orderIndex</b>,由 LLM 规划顺序落库决定。</div>
+
+<h3>6.2 TaskExecutionWorker.kt —— 无状态的一次性推进器</h3>
+<pre><code>@HiltWorker
+class TaskExecutionWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted params: WorkerParameters,
+    private val executor: TaskExecutor,
+) : CoroutineWorker(appContext, params) {
+
+    override suspend fun doWork(): Result {
+        val taskId = inputData.getLong(KEY_TASK_ID, -1L)
+        if (taskId <= 0L) return Result.failure()
+
+        val resumeStepId = inputData.getLong(KEY_RESUME_STEP_ID, -1L)
+        val userApproved = inputData.getBoolean(KEY_USER_APPROVED, false)
+
+        return try {
+            if (resumeStepId > 0L) executor.resumeTask(taskId, resumeStepId, userApproved)
+            else executor.executeTask(taskId)
+            // 无论"全部完成"还是"中途挂起",本次推进使命都已结束,正常返回 success;
+            // 挂起后的续跑完全依靠"用户操作 → 再次入队"
+            Result.success()
+        } catch (e: CancellationException) { throw e }
+        catch (e: Exception) { Result.failure() }
+    }
+}</code></pre>
+<p>关键设计:① <b>@HiltWorker + @AssistedInject</b> —— Worker 由系统实例化(不能本类构造注入),appContext/params 用 @Assisted 传入,其它依赖正常注入;② <b>挂起也返回 success</b> —— 不占后台配额、不重试、不阻塞;续跑靠"用户操作 → Repository 再次 enqueue";③ 入队参数三件套 KEY_TASK_ID / KEY_RESUME_STEP_ID / KEY_USER_APPROVED 决定这次是"新执行"还是"恢复执行"。</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 7 章 -->
+<!-- ============================================================ -->
+<section id="s7">
+<h2>7 · UI 层精讲:MVI + Compose</h2>
+
+<h3>7.1 入口与导航</h3>
+<h4>MainActivity.kt —— 唯一 Activity + prefill 机制</h4>
+<pre><code>@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    private val prefillInstruction = MutableStateFlow&lt;String?&gt;(null)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()                                       // 全面屏沉浸式
+        prefillInstruction.value = intent?.getStringExtra(EXTRA_PREFILL)
+        setContent {
+            TaskFlowTheme {
+                val prefill by prefillInstruction.collectAsState()
+                AppNavHost(prefillInstruction = prefill, modifier = Modifier.fillMaxSize())
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent); setIntent(intent)
+        prefillInstruction.value = intent.getStringExtra(EXTRA_PREFILL)   // singleTop 时光走这里
+    }
+
+    companion object { const val EXTRA_PREFILL = "prefill" }
+}</code></pre>
+<div class="tip"><b>prefill 是调试神器:</b>adb 无法直接输入中文,于是做了这个机制 —— <code>adb shell am start -n com.example.taskflowai/.MainActivity --es prefill "给妈妈发短信说晚点回家"</code> 即可免打字注入指令。注意两个前提:Manifest 里 <code>launchMode="singleTop"</code>(应用已在前台时走 onNewIntent 而不是重建),以及用 StateFlow 承载(保证 onNewIntent 的更新触发重组)。</div>
+
+<h4>AppNavHost.kt —— 三目的地</h4>
+<pre><code>NavHost(navController, startDestination = "home") {
+    composable("home") { HomeScreen(onOpenTask = { navController.navigate("task/$it") },
+        onOpenSettings = { navController.navigate("settings") }, prefillInstruction = prefillInstruction) }
+    composable("task/{taskId}", arguments = listOf(navArgument("taskId") { type = NavType.LongType })) {
+        TaskDetailScreen(onBack = { navController.popBackStack() })
+        // 注意:taskId 由 TaskDetailViewModel 通过 SavedStateHandle 读取,导航回调不显式传参
+    }
+    composable("settings") { SettingsScreen(onBack = { navController.popBackStack() }) }
+}</code></pre>
+
+<h3>7.2 Home 屏 MVI 三件套(理解 MVI 的最佳样本)</h3>
+<h4>MainContract.kt —— 契约先行</h4>
+<pre><code>/** 用户事件:UI 把它们交给 MainViewModel.onIntent,自身不改变任何状态 */
+sealed interface MainIntent {
+    data class InputChanged(val text: String) : MainIntent
+    data object Submit : MainIntent
+    data object ErrorShown : MainIntent
+    data class VoiceResult(val text: String) : MainIntent      // 语音:填入并自动发送
+    data class ShowError(val message: String) : MainIntent
+    data object OpenSettings : MainIntent
+    data class DeleteTask(val taskId: Long) : MainIntent
+}
+
+/** 一次性副作用(不放进 State,避免旋转/重组时重复触发) */
+sealed interface MainEffect {
+    data class NavigateToTask(val taskId: Long) : MainEffect    // 提交成功 → 进详情看执行
+    data object NavigateToSettings : MainEffect                  // API Key 未配置 → 引导设置
+}</code></pre>
+<p>MVI 的三条铁律(契约注释强调):UiState = 不可变数据,VM 单向产出,<b>UI 零逻辑</b>(文案/进度都在 VM 算好);Intent = 用户事件,<b>UI 唯一的状态变更入口</b>;Effect = 一次性副作用(导航),<b>不进 UiState</b>(否则重组会重复导航)。</p>
+
+<h4>MainViewModel.kt —— 状态出口与入口</h4>
+<pre><code>/** 唯一的状态出口:任务列表(实时)+ 本地状态 → 不可变 UiState */
+val uiState: StateFlow&lt;MainUiState&gt; =
+    combine(repository.observeTasks(), local) { tasks, localState ->     // Room Flow ⊕ 本地状态
+        MainUiState(input = localState.input, submitting = localState.submitting,
+            error = localState.error, canGoSettings = localState.canGoSettings,
+            tasks = tasks.map { it.toUiModel() })
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000),
+        initialValue = MainUiState(input = DEFAULT_INSTRUCTION))
+
+/** 唯一的状态入口:处理 UI Intent */
+fun onIntent(intent: MainIntent) {
+    when (intent) {
+        is MainIntent.InputChanged -> local.update { it.copy(input = intent.text) }
+        MainIntent.Submit -> submit()
+        is MainIntent.VoiceResult -> { local.update { it.copy(input = intent.text) }; submit() }
+        is MainIntent.DeleteTask -> viewModelScope.launch { repository.deleteTask(intent.taskId) }
+        MainIntent.OpenSettings -> viewModelScope.launch { _effects.emit(MainEffect.NavigateToSettings) }
+        ...
+    }
+}</code></pre>
+<p><code>submit()</code> 的两道防呆:① API Key 未配置 → 不发送,error="请先在设置中配置 API Key"+ canGoSettings=true(<b>不崩溃</b>);② 捕获异常 → <code>toUserMessage()</code> 把 401 翻译成"API Key 无效或未授权,请到设置中检查"、IOException 翻译成"网络连接失败"。</p>
+
+<h4>HomeScreen.kt —— UI 零逻辑 + 状态驱动动画</h4>
+<p>任务卡片的关键细节(⚠️/💬 前缀、进度条动画):</p>
+<pre><code>// 大模型的真实回答 / 失败原因(摘要展示,点开详情看全文)
+task.answer?.let { answer ->
+    val prefix = if (task.status == TaskStatus.FAILED) "⚠️" else "💬"
+    Text(text = "$prefix $answer", style = MaterialTheme.typography.bodySmall,
+        maxLines = 2, overflow = TextOverflow.Ellipsis)
+}
+
+// 进度条动画:状态每推进一次,数值平滑过渡
+val animatedProgress by animateFloatAsState(targetValue = task.progress,
+    animationSpec = tween(durationMillis = 500), label = "taskProgress")
+LinearProgressIndicator(progress = { animatedProgress }, ...)</code></pre>
+<p><b>左划删除 SwipeToDeleteTask</b>(手势细节值得逐行读):</p>
+<pre><code>val revealPx = with(LocalDensity.current) { 96.dp.toPx() }
+val offsetX = remember { Animatable(0f) }
+
+// 底层:红色删除面板(靠右,卡片左移后露出);点"删除"先收起再执行
+// 上层:卡片本体——水平拖动跟手,松开吸附
+Modifier
+    .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+    .draggable(
+        orientation = Orientation.Horizontal,
+        state = rememberDraggableState { delta ->
+            scope.launch { offsetX.snapTo((offsetX.value + delta).coerceIn(-revealPx, 0f)) }
+            // 偏移限制:只能向左拖 0..96dp
+        },
+        onDragStopped = { velocity ->
+            val open = offsetX.value &lt; -revealPx * 0.4f || velocity &lt; -400f   // 过半 或 足够快的左甩
+            offsetX.animateTo(if (open) -revealPx else 0f, tween(200))
+        },
+    )
+// 卡片点击:展开态下点一下先收起(不导航),否则 onOpen()</code></pre>
+<p>列表动画:新任务「remember visible=false + LaunchedEffect 置 true + AnimatedVisibility(fadeIn+expandVertically) + animateItem()」实现淡入展开;删除/移动由 <code>animateItem()</code> 平滑。错误处理:Snackbar 显示后回注 <code>ErrorShown</code> 清除,形成"弹出→清除"闭环;canGoSettings 决定是否带"去设置"按钮。</p>
+
+<h3>7.3 TaskDetail 屏 —— 步骤条与权限链路</h3>
+<p><b>权限 Effect → 系统 launcher 的完整链路</b>(运行时权限与特殊权限的分流):</p>
+<pre><code>// 全局动态权限请求:整屏唯一的 launcher,由 ViewModel 的 Effect 触发,结果回注为 Intent
+var pendingPermissionStepId by remember { mutableStateOf(-1L) }
+val permissionLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.RequestMultiplePermissions(),
+) { result ->
+    val stepId = pendingPermissionStepId
+    if (stepId > 0) {
+        val granted = result.isNotEmpty() &amp;&amp; result.values.all { it }
+        viewModel.onIntent(TaskDetailIntent.PermissionResult(stepId, granted))
+        pendingPermissionStepId = -1L
+    }
+}
+// 特殊权限:精确闹钟(SCHEDULE_EXACT_ALARM)不是运行时权限,需跳系统设置页授权
+val exactAlarmLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartActivityForResult(),
+) {
+    val stepId = pendingPermissionStepId
+    if (stepId > 0) {
+        // 返回后让引擎重新执行该步骤(未授予会再次挂起,已授予则继续)
+        viewModel.onIntent(TaskDetailIntent.PermissionResult(stepId, granted = true))
+        pendingPermissionStepId = -1L
+    }
+}
+
+LaunchedEffect(Unit) {
+    viewModel.effects.collect { effect ->
+        when (effect) {
+            is TaskDetailEffect.RequestPermissions -> {
+                pendingPermissionStepId = effect.stepId
+                val needsExactAlarmSettings = Build.VERSION.SDK_INT >= 31 &amp;&amp;
+                    effect.permissions.contains(Manifest.permission.SCHEDULE_EXACT_ALARM)
+                if (needsExactAlarmSettings) {
+                    runCatching { exactAlarmLauncher.launch(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)) }
+                        .onFailure { exactAlarmLauncher.launch(Intent(Settings.ACTION_SETTINGS)) }
+                } else {
+                    permissionLauncher.launch(effect.permissions.toTypedArray())
+                }
+            }
+        }
+    }
+}</code></pre>
+<div class="why"><b>四个精妙点:</b>① 权限逻辑在 VM(Effect),launcher 在 Compose —— 职责不越界;② <b>跳设置页返回后盲回注 granted=true</b> —— "未授予会再次挂起,已授予则继续",用重放代替猜测结果;③ <code>runCatching</code> 兜底 ACTION_REQUEST_SCHEDULE_EXACT_ALARM 不存在时退到系统设置主页;④ pendingPermissionStepId 是 launcher 回调与 Effect 之间的"传参桥"。</div>
+<p><b>步骤条 UI:</b>StepperRow(左 36dp 节点列 + 竖直连接线 + 右侧 StepCard);挂起时 AnimatedVisibility 展开"允许/拒绝"区(PERMISSION 提示"该操作需要系统权限",否则"该操作需要你确认后才会执行");详情头部的进度条用 animateFloatAsState(tween(600)) 平滑。</p>
+
+<h3>7.4 Settings 屏 —— 草稿模式</h3>
+<p>三个 VM 状态流(draft / knowledgeCount / message)combine 成 UiState;核心技术点:<b>草稿模式</b> —— 输入先改本地 draft,点"保存"才写 DataStore;init 里收集已保存设置时<b>仅当 !userEdited 才同步进 draft</b>(处理 DataStore 异步加载完成前的空窗);切换服务商时自动预填该服务商默认 baseUrl;"清除记忆"带 AlertDialog 二次确认。</p>
+
+<h3>7.5 组件层</h3>
+<h4>StatusBadge.kt —— 状态驱动动画</h4>
+<pre><code>/** 文字状态徽章:文字或颜色变化时交叉淡入 */
+@Composable
+fun AnimatedStatusBadge(text: String, color: Color, modifier: Modifier = Modifier) {
+    Crossfade(targetState = text to color,          // Pair 作 targetState:任一变化都触发动画
+        animationSpec = tween(durationMillis = 260), label = "statusBadge", modifier = modifier) { (value, valueColor) ->
+        Text(value, style = MaterialTheme.typography.labelSmall, color = valueColor,
+            modifier = Modifier.border(1.dp, valueColor, RoundedCornerShape(8.dp))
+                .padding(horizontal = 8.dp, vertical = 3.dp))
+    }
+}</code></pre>
+<p><b>StepStatusNode</b>(步骤条左侧节点):36dp 圆内再套一层 Crossfade,五种状态分别渲染 —— PENDING→序号 / RUNNING→18dp 转圈 / WAITING_USER→Warning 图标 / SUCCESS→CheckCircle / FAILED→Close。<b>颜色映射</b>统一 when:SUCCESS→Color(0xFF2E7D32),FAILED→error,PAUSED/WAITING_USER→tertiary…</p>
+<div class="why"><b>这就是 MVI + Compose 的组合方式:</b>UI 不需要知道"何时该动" —— 只要 state 变化,Crossfade / animateFloatAsState 自动完成过渡。状态推进 → Room Flow 发射 → UiState 重组 → 动画自动播放,整条链路零手动触发。</div>
+<h4>ToolIcon.kt —— 一行 when 的映射</h4>
+<pre><code>fun toolIcon(toolName: String): ImageVector = when (toolName) {
+    "send_sms" -> Icons.Filled.MailOutline
+    "set_alarm" -> Icons.Filled.Notifications
+    "add_calendar_event" -> Icons.Filled.DateRange
+    "search_weather" -> Icons.Filled.Search
+    else -> Icons.Filled.Build
+}</code></pre>
+
+<h3>7.6 主题(ui/theme)</h3>
+<p>TaskFlowTheme 默认<b>动态取色</b>(Android 12+ 用系统壁纸色,低版本回退 Purple 系)+ Material3 Typography。Color.kt / Type.kt 为 Compose 模板默认色与排版 —— 想升级视觉风格,从这里改(参考 README「界面审美偏好」:莫兰迪低饱和方向)。</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 8 章 -->
+<!-- ============================================================ -->
+<section id="s8">
+<h2>8 · 系统级专题:闹钟 · 语音 · 跨应用</h2>
+<p>这一章是三个"与 Android 系统深度打交道"的专题,每个都踩过真实机型(华为 EMUI)的坑,是工程经验密度最高的部分。</p>
+
+<h3>8.1 闹钟自持系统(data/alarm + ui/alarm)</h3>
+<h4>背景约束(类注释原话)</h4>
+<div class="why">"安卓不允许第三方应用删除'时钟应用'的闹钟 —— 要让助手能'关掉闹钟',<b>闹钟就必须由本应用注册</b>(系统级闹钟:状态栏图标、锁屏全屏响铃),并在 AlarmDao 登记身份(实体 id 即 PendingIntent 的 requestCode),才可列举与取消。" 这是"可管理闹钟"整个功能的设计前提:管理权来自"是我注册的"。</div>
+
+<h4>AlarmScheduler —— 注册与身份体系</h4>
+<pre><code>suspend fun schedule(triggerAtMillis: Long, label: String): AlarmEntity {
+    val entity = AlarmEntity(triggerAtMillis = triggerAtMillis, label = label,
+        createdAt = System.currentTimeMillis())
+    val id = alarmDao.insert(entity)          // 先落库拿自增 id
+    val stored = entity.copy(id = id)         // PendingIntent 的 requestCode 依赖 id,必须回填
+
+    val showIntent = PendingIntent.getActivity(     // 点状态栏闹钟图标 → 打开本应用
+        context, 0, Intent(context, MainActivity::class.java),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+    alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(triggerAtMillis, showIntent),
+        operationFor(stored))
+    return stored
+}
+
+/**
+ * PendingIntent 的身份 = requestCode + 目标组件(extras 不参与比较),
+ * 因此注册/取消都用同一个 id 作为 requestCode 才能正确命中。
+ */
+private fun operationFor(alarm: AlarmEntity): PendingIntent =
+    PendingIntent.getBroadcast(context, alarm.id.toInt(),
+        Intent(context, AlarmReceiver::class.java).apply {
+            putExtra(AlarmReceiver.EXTRA_ALARM_ID, alarm.id)
+            putExtra(AlarmReceiver.EXTRA_LABEL, alarm.label)
+            putExtra(AlarmReceiver.EXTRA_TRIGGER_AT, alarm.triggerAtMillis)
+        },
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)</code></pre>
+<div class="pit"><b>踩坑 · PendingIntent 的身份比较:</b><b>extras 不参与比较!</b>只有 requestCode + 目标组件/action/data 等"过滤字段"决定两个 PendingIntent 是否相等。所以"注册/取消都要命中同一个闹钟"的唯一锚点是 <code>alarm.id.toInt()</code> 作为 requestCode;extras 只是数据载体。<code>FLAG_UPDATE_CURRENT</code> 保证复用时更新 extras,<code>FLAG_IMMUTABLE</code> 是 Android 12+ 的强制要求。</div>
+<p><b>nextOccurrence 算法:</b>今天该时刻(秒/毫秒清零)若已过(<code>&lt;= now</code>,等于也算过)→ 顺延一天。cancel = 系统层 <code>alarmManager.cancel(operationFor(alarm))</code> + 本地 <code>alarmDao.deleteById</code>(双清)。</p>
+
+<h4>AlarmReceiver —— 到点的"三保险"</h4>
+<pre><code>override fun onReceive(context: Context, intent: Intent) {
+    val alarmId = intent.getLongExtra(EXTRA_ALARM_ID, -1L)
+    val label = intent.getStringExtra(EXTRA_LABEL) ?: "闹钟"
+    val triggerAt = intent.getLongExtra(EXTRA_TRIGGER_AT, System.currentTimeMillis())
+
+    // 清理登记(goAsync 保证协程跑完再结束广播)
+    if (alarmId > 0) {
+        val pending = goAsync()
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            try {
+                EntryPointAccessors.fromApplication(context.applicationContext, AlarmEntryPoint::class.java)
+                    .alarmScheduler().onFired(alarmId)
+            } finally { pending.finish() }
+        }
+    }
+    // 33+ 无通知权限则无法弹出(设置闹钟时已做权限预检,这里双保险)
+    if (Build.VERSION.SDK_INT >= 33 &amp;&amp; ContextCompat.checkSelfPermission(...) != PERMISSION_GRANTED) return
+    showAlarmNotification(context, alarmId, label, triggerAt)
+}</code></pre>
+<pre><code>// showAlarmNotification 的三保险:
+// ① 主动直接拉起全屏界面(应用可见/被系统豁免时立即生效);
+try { context.startActivity(fullScreenIntent) }
+catch (e: Exception) { /* 被后台启动限制拦截 → 退回 ② */ }
+
+// ② fullScreenIntent 通知(锁屏场景由系统拉起全屏)
+.setFullScreenIntent(contentIntent, true)
+.setOngoing(true).setAutoCancel(false)          // 闹钟需持续存在直至手动关闭
+
+// ③ 渠道声音 = 系统默认闹铃音(RingtoneManager.getDefaultUri(TYPE_ALARM) ?: TYPE_RINGTONE)
+//    即使全屏界面未拉起,通知本身也会出声</code></pre>
+<div class="pit"><b>踩坑 · 通知渠道声音创建后不可修改:</b>渠道 id 叫 <code>taskflow_alarm_v2</code>,为什么带 _v2?注释原话:"<b>渠道带闹铃音(渠道一旦创建声音不可改,故升版本号)</b>"。Android O 起 NotificationChannel 的声音/重要性等属性创建后即冻结,要让老用户换上新的闹铃音,唯一办法就是换一个新渠道 id。这是极高频的实战坑。</div>
+<p>其它细节:① <b>goAsync</b> —— BroadcastReceiver.onReceive 必须 10 秒内返回,异步 DB 操作要用 goAsync 延长生命周期(且必须 finally finish);② <b>Hilt EntryPoint</b> —— BroadcastReceiver 由系统实例化,无法构造注入,用 <code>@EntryPoint</code> 接口 + <code>EntryPointAccessors.fromApplication</code> 运行时取依赖;③ 通知 id 用 <code>10_000 + alarmId</code> 固定偏移段。</p>
+
+<h4>AlarmAlertActivity —— 全屏响铃界面</h4>
+<pre><code>override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    // 锁屏上直接展示并点亮屏幕(与 Manifest 属性双重保障)
+    if (Build.VERSION.SDK_INT >= 27) { setShowWhenLocked(true); setTurnScreenOn(true) }
+    ...
+    startRingtone()
+}
+
+private fun startRingtone() {
+    val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+    ringtone = RingtoneManager.getRingtone(this, uri)?.apply {
+        audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+        if (Build.VERSION.SDK_INT >= 28) isLooping = true    // 循环播放
+        play()
+    }
+}</code></pre>
+<p>UI 是全屏 Compose:⏰ 图标 + 时间(displayMedium)+ 标签 + "关闭闹钟"按钮;dismiss 时停铃声 + 取消对应通知 + finish;onDestroy 再次兜底停铃(防泄漏/防响铃不停)。Manifest 里该 Activity 带 <code>showWhenLocked / turnScreenOn / excludeFromRecents / launchMode="singleInstance" / taskAffinity=""</code>。</p>
+
+<h3>8.2 语音双引擎(VoiceInput + VoskVoiceEngine)</h3>
+<h4>为什么需要双引擎</h4>
+<p>华为 EMUI 的 <code>FakeRecognitionService</code> 禁止第三方应用绑定系统语音识别服务:调用 <code>startListening()</code> 会同步抛 SecurityException;<b>更阴险的情况是既不报错也不回调</b>。因此策略是"系统识别器优先,任一环节失败标记损坏并无缝切 Vosk 离线引擎,后续直接用 Vosk 不再重试"。</p>
+
+<h4>引擎链调度</h4>
+<pre><code>/** 按需申请权限后真正开始一次识别(引擎链:系统识别器 → Vosk 离线) */
+fun beginListening() {
+    if (isListening) return
+    if (VoskVoiceEngine.isDownloading) { onError("语音模型下载中,请稍候"); return }
+
+    // 引擎①:系统识别器(此前未损坏时)
+    if (!SpeechRecognizerHolder.systemBroken) {
+        val dispatched = startSystemListening(context.applicationContext,
+            onResult = { text -> isListening = false; onRecognized(text) },
+            onError = { msg -> isListening = false; onError(msg) },
+            onListeningChanged = { isListening = it })
+        if (dispatched) return
+        // 同步失败:startSystemListening 已标记损坏,立即无缝落到引擎②
+    }
+    beginVoskListening()
+}</code></pre>
+
+<h4>系统识别器的三条失败路径(全部收敛到 systemBroken)</h4>
+<pre><code>// 看门狗:服务被拒绑后既不报错也不回调时,5 秒判定损坏并提示切换
+SpeechRecognizerHolder.armWatchdog {
+    SpeechRecognizerHolder.systemBroken = true
+    onListeningChanged(false)
+    onError("系统语音服务不可用,已切换至离线识别,请再按一次麦克风")
+}
+Log.d("VoiceInput", "system recognizer dispatched")
+true
+} catch (e: Exception) {
+    // 同步被拒(如华为 FakeRecognitionService 的 SecurityException):标记损坏,
+    // 静默返回 false 由调用方无缝切到 Vosk,不打扰用户。
+    SpeechRecognizerHolder.systemBroken = true
+    onListeningChanged(false)
+    false
+}</code></pre>
+<table>
+<tr><th>失败路径</th><th>触发条件</th><th>处理</th></tr>
+<tr><td>同步被拒</td><td>obtain 抛异常/返回 null(!isRecognitionAvailable)</td><td>systemBroken=true,静默切换</td></tr>
+<tr><td>startListening 抛 SecurityException</td><td>华为 FakeRecognitionService 典型行为</td><td>catch 中标记损坏,返回 false 走 Vosk</td></tr>
+<tr><td>看门狗超时(5s)</td><td>派发成功但 onReadyForSpeech/onError/onResults 全都不来</td><td>Handler.postDelayed 判定损坏 + 提示用户再按一次</td></tr>
+</table>
+<p><code>systemBroken</code> 是进程级 @Volatile 标记:一旦损坏,后续按压直接就 Vosk,避免每次白失败一次。收到正常回调(onReadyForSpeech 等)会 <code>disarmWatchdog()</code>。</p>
+
+<h4>交互与动画细节</h4>
+<ul>
+<li><b>刻意不用 IconButton</b> —— 其 clickable 会消费手势,外层收不到长按;改用 <code>Modifier.pointerInput + detectTapGestures(onPress = { ... tryAwaitRelease() ... })</code>:按下开始识别,松开(tryAwaitRelease)停止。</li>
+<li>无录音权限时:按下记 pendingStart → <code>permissionLauncher.launch(RECORD_AUDIO)</code> → 回调 granted &amp;&amp; pendingStart 则自动开始识别(权限按需申请)。</li>
+<li><b>脉冲动画</b>:rememberInfiniteTransition + 两个 animateFloat(pulseScale 1→1.28、pulseAlpha 0.35→0.08,infiniteRepeatable(tween(620), Reverse)),isListening 时在图标下渲染 40dp 光晕。</li>
+</ul>
+
+<h4>VoskVoiceEngine —— 模型管理与结果累计</h4>
+<p>模型:<code>vosk-model-small-cn-0.22</code>(42MB),HttpURLConnection 流式下载到 cacheDir(进度仅在 25/50/75% 上报),ZipInputStream 解压到 <code>getExternalFilesDir(null)</code>(解压完整标志 = am/ 与 conf/ 目录存在);<code>downloadModelAsync</code> 用应用级 scope(用户切页面下载不被取消);<code>ensureModelLoaded</code> 在 Dispatchers.Default 构造 <code>Model</code>(首次约 1s,绝不占主线程)。</p>
+<div class="pit"><b>踩坑 · Vosk 结果必须累计:</b>说话中途的停顿会让 Vosk 先产出一次 onResult(中间结果)。如果只在 onFinalResult 取文本会<b>丢句子</b>。正确做法:每次 onResult 解析出 text 追加到 StringBuilder,onFinalResult 时 <code>(accumulated + 最后一段).replace(" ", "")</code> 一起返回 —— 源码注释写得很清楚:"累计拼接,避免丢句子"。</div>
+
+<h3>8.3 跨应用:open_app 的两个系统知识点</h3>
+<p>(open_app 实现细节见 §5.2.3,此处补充两个与系统相关的知识点)</p>
+<ul>
+<li><b>Android 11+ 包可见性:</b>不声明的话,<code>queryIntentActivities</code> 只能看到部分应用(系统白名单)。Manifest 里 <code>&lt;queries&gt;&lt;intent&gt;MAIN/LAUNCHER&lt;/intent&gt;&lt;/queries&gt;</code> 是官方推荐的合规声明方式(替代 Play 受限的 QUERY_ALL_PACKAGES)。本设备(Android 10)不受此限制,但代码对高版本设备已就绪。</li>
+<li><b>后台启动 Activity 限制(Android 10+):</b>应用在后台时 startActivity 会被拦截 —— 本项目的场景天然安全(用户刚提交指令,应用在前台);如果从后台被唤起,<code>startActivitySafely</code> 会捕获异常并如实报"可能被系统后台启动策略拦截",绝不崩溃。闹钟场景则因系统豁免(全屏通知 + 已持有自持闹钟)可以后台拉起。</li>
+</ul>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 9 章 -->
+<!-- ============================================================ -->
+<section id="s9">
+<h2>9 · 依赖注入与工程配置</h2>
+
+<h3>9.1 Hilt 全景:哪个对象怎么来的</h3>
+<table>
+<tr><th>对象</th><th>提供方式</th><th>要点</th></tr>
+<tr><td>WorkManager</td><td>AppModule @Provides</td><td>单例</td></tr>
+<tr><td>DataStore&lt;Preferences&gt;</td><td>AppModule @Provides</td><td><code>preferencesDataStore(name = "taskflow_settings")</code> 委托</td></tr>
+<tr><td>CoroutineScope(app 级)</td><td>AppModule @Provides @ApplicationScope</td><td>自定义 @Qualifier;SupervisorJob + Dispatchers.Default</td></tr>
+<tr><td>TaskFlowDatabase + 4 DAO</td><td>DatabaseModule @Provides</td><td>注册 4 条迁移(见 §10)</td></tr>
+<tr><td>Json / OkHttpClient / Retrofit / LlmApiService</td><td>NetworkModule @Provides</td><td>OkHttp 拦截器<b>请求时刻</b>读 apiKey 加 Authorization;超时 connect 30s / read 60s</td></tr>
+<tr><td>Set&lt;Tool&gt;(7 个工具)</td><td>ToolModule @Binds @IntoSet ×7</td><td>多绑定;新增工具在此加一行</td></tr>
+<tr><td>Repository ×3 / LlmClient / ToolRegistry / ToolExecutor / TaskSummarizer / AlarmScheduler 等</td><td>构造函数 @Inject</td><td>无需模块,<code>@Singleton</code> 注解在类上</td></tr>
+<tr><td>HiltWorkerFactory</td><td>TaskFlowApp @Inject 字段</td><td>交给 WM 的 Configuration(见 9.2)</td></tr>
+<tr><td>TaskExecutionWorker</td><td>@HiltWorker + @AssistedInject</td><td>appContext / params 用 @Assisted</td></tr>
+</table>
+
+<h4>本项目用到的 Hilt 注解细节(全部踩过或特意设计过)</h4>
+<table>
+<tr><th>注解/写法</th><th>用在哪</th><th>为什么必须这样</th></tr>
+<tr><td><code>@param:ApplicationContext</code> / <code>@param:Named</code> / <code>@param:ApplicationScope</code></td><td>构造参数上</td><td>Kotlin 的 use-site target:不写 @param: 时限定符可能落在"属性"而非"构造参数"上,Hilt 解析失败</td></tr>
+<tr><td><code>Set&lt;@JvmSuppressWildcards Tool&gt;</code></td><td>ToolRegistry 构造</td><td>抑制 Kotlin 泛型通配符,保证 Dagger 正确解析多绑定 Set 元素</td></tr>
+<tr><td><code>@Binds @IntoSet</code></td><td>ToolModule ×7</td><td>abstract 模块 + 一行一工具;可读性与扩展性最好</td></tr>
+<tr><td><code>@HiltWorker</code> + <code>@AssistedInject</code></td><td>TaskExecutionWorker</td><td>Worker 由系统实例化,Assisted 参数由 WorkManager 传入</td></tr>
+<tr><td><code>@EntryPoint</code> + <code>EntryPointAccessors</code></td><td>AlarmReceiver</td><td>BroadcastReceiver 无法构造注入,运行时取依赖</td></tr>
+<tr><td><code>ksp("androidx.hilt:hilt-compiler")</code></td><td>build.gradle.kts</td><td><b>@HiltWorker 必需</b>;缺了不报编译错,运行时反射 NoSuchMethodException(真实踩坑,见 §11.13)</td></tr>
+</table>
+
+<h3>9.2 WorkManager 集成(两处配置缺一不可)</h3>
+<pre><code>// ① TaskFlowApp.kt:把 HiltWorkerFactory 交给 WorkManager
+@HiltAndroidApp
+class TaskFlowApp : Application(), Configuration.Provider {
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
+}</code></pre>
+<pre><code>&lt;!-- ② AndroidManifest.xml:移除默认自动初始化,否则默认初始化会先于上面的 Configuration 生效 --&gt;
+&lt;provider android:name="androidx.startup.InitializationProvider"
+    android:authorities="${applicationId}.androidx-startup" android:exported="false" tools:node="merge"&gt;
+    &lt;meta-data android:name="androidx.work.WorkManagerInitializer"
+        android:value="androidx.startup" tools:node="remove" /&gt;
+&lt;/provider&gt;</code></pre>
+<div class="why"><b>为什么必须移除默认初始化?</b>WorkManager 默认由 androidx.startup 的 InitializationProvider 在启动时自动初始化;而 @HiltWorker 要求 Worker 由 HiltWorkerFactory 创建。如果默认初始化先生效,自定义 Factory 就失效,反射创建 Worker 时找不到 @Assisted 构造器 → 运行时报 NoSuchMethodException。这个组合拳(Configuration.Provider + tools:node="remove")是 Hilt + WorkManager 的标准姿势。</div>
+
+<h3>9.3 构建配置(gradle.properties 的特殊开关)</h3>
+<pre><code>org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+org.gradle.configuration-cache=true
+kotlin.code.style=official
+android.disallowKotlinSourceSets=false   # ← AGP 9 兼容开关(教学重点)</code></pre>
+<p><b>android.disallowKotlinSourceSets=false</b>:AGP 9 内置 Kotlin 后,默认拒绝第三方插件通过 <code>kotlin.sourceSets</code> DSL 注册生成源码目录(如 <code>build/generated/ksp</code>)。KSP / Hilt / Room 的代码生成全都依赖这个旧行为,不设 false 会直接构建失败。</p>
+
+<h3>9.4 AndroidManifest.xml 完整拆解</h3>
+<h4>权限(8 项,各有明确存在理由)</h4>
+<table>
+<tr><th>权限</th><th>用途</th><th>获取方式</th></tr>
+<tr><td>INTERNET</td><td>调 LLM API / 天气 / 下载 Vosk 模型</td><td>安装即授予</td></tr>
+<tr><td>RECORD_AUDIO</td><td>语音输入</td><td>运行时,按下麦克风时按需申请</td></tr>
+<tr><td>SEND_SMS</td><td>send_sms 工具</td><td>危险权限;仅声明不主动申请,未授权时工具返回 RequiresPermission</td></tr>
+<tr><td>WRITE_CALENDAR</td><td>日历工具</td><td>同上</td></tr>
+<tr><td>com.android.alarm.permission.SET_ALARM</td><td>系统时钟 HandleSetAlarm</td><td>normal,安装即授予;不加会报 Permission Denial(华为实测踩坑)</td></tr>
+<tr><td>SCHEDULE_EXACT_ALARM</td><td>API 31+ setAlarmClock</td><td>特殊权限:跳系统设置页授权(不能运行时请求)</td></tr>
+<tr><td>POST_NOTIFICATIONS</td><td>API 33+ 闹钟通知</td><td>运行时</td></tr>
+<tr><td>USE_FULL_SCREEN_INTENT</td><td>锁屏全屏响铃</td><td>normal;API 34+ 非闹钟类可能被降级为横幅(系统策略)</td></tr>
+</table>
+
+<h4>&lt;queries&gt;(Android 11+ 包可见性)</h4>
+<pre><code>&lt;queries&gt;
+    &lt;!-- 否则 speechRecognizer.isRecognitionAvailable 会误报不可用 --&gt;
+    &lt;intent&gt;&lt;action android:name="android.speech.RecognitionService" /&gt;&lt;/intent&gt;
+    &lt;!-- open_app 工具:枚举启动器应用(合规做法,无需 QUERY_ALL_PACKAGES) --&gt;
+    &lt;intent&gt;&lt;action android:name="android.intent.action.MAIN" /&gt;
+            &lt;category android:name="android.intent.category.LAUNCHER" /&gt;&lt;/intent&gt;
+&lt;/queries&gt;</code></pre>
+
+<h4>组件注册</h4>
+<table>
+<tr><th>组件</th><th>关键属性</th><th>为什么</th></tr>
+<tr><td>.MainActivity</td><td>exported / <b>launchMode="singleTop"</b> / windowSoftInputMode="adjustResize"</td><td>singleTop 让 adb prefill 走 onNewIntent 而非重建;adjustResize 让输入法不遮输入框</td></tr>
+<tr><td>.data.alarm.AlarmReceiver</td><td>exported="false"</td><td>只接自己注册的 PendingIntent</td></tr>
+<tr><td>.ui.alarm.AlarmAlertActivity</td><td>showWhenLocked / turnScreenOn / excludeFromRecents / singleInstance / taskAffinity=""</td><td>锁屏亮屏 + 不污染最近任务/不与主任务粘连</td></tr>
+<tr><td>InitializationProvider</td><td>tools:node="remove"(WorkManagerInitializer)</td><td>见 9.2</td></tr>
+</table>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 10 章 -->
+<!-- ============================================================ -->
+<section id="s10">
+<h2>10 · 数据库版本演进史(v1 → v5)</h2>
+<p>每一次功能迭代都会给数据库留下一个版本。理解这条演进链,既能学会"增量迁移"的实战写法,也能读懂每个功能是什么时候、为什么加进来的。</p>
+<table>
+<tr><th>版本</th><th>变更</th><th>动机(对应功能)</th><th>identityHash</th></tr>
+<tr><td>v1</td><td>tasks + steps 两张表</td><td>阶段 3:任务引擎诞生</td><td><code>160bc7db…</code></td></tr>
+<tr><td>v2</td><td>+ knowledge 表(instruction / toolSequenceJson / embedding BLOB)</td><td>阶段 5:RAG 个性化记忆</td><td><code>0872d3b7…</code></td></tr>
+<tr><td>v3</td><td>tasks + answer 列(TEXT,可空)</td><td>真实数据改造:保存大模型的真实回答</td><td><code>1bdd17fb…</code></td></tr>
+<tr><td>v4</td><td>+ alarms 表(id / triggerAtMillis / label / createdAt)</td><td>可管理闹钟:登记自持闹钟以便取消</td><td><code>bf4ee3f6…</code></td></tr>
+<tr><td>v5</td><td>steps + toolCallId 列(TEXT,可空)</td><td>Agent 闭环:工具结果回灌的协议配对 id</td><td><code>ca3a8692…</code></td></tr>
+</table>
+<p><b>迁移注册在 DatabaseModule:</b></p>
+<pre><code>Room.databaseBuilder(context, TaskFlowDatabase::class.java, TaskFlowDatabase.NAME)
+    .addMigrations(
+        TaskFlowDatabase.MIGRATION_1_2,
+        TaskFlowDatabase.MIGRATION_2_3,
+        TaskFlowDatabase.MIGRATION_3_4,
+        TaskFlowDatabase.MIGRATION_4_5,
+    )
+    .build()</code></pre>
+<div class="tip"><b>怎么验证迁移是对的?</b>① schema JSON(app/schemas/N.json)是 Room 编译期生成的结构快照,与迁移 SQL 必须等价 —— 真机升级(旧版本 APK 装新的)时若不一致,Room 会直接抛 IllegalStateException 让你立刻发现;② 本项目 v3→v4 的迁移在设备上真实执行过(v3 数据升级到 v4,闹钟功能上线),属于"实战验证过"的迁移链。</div>
+<p><b>两个可复用的迁移写法:</b>加"可空列"→ <code>ALTER TABLE t ADD COLUMN c TEXT</code>(不带 NOT NULL/DEFAULT);加"新表"→ 完整 CREATE TABLE,列顺序与类型必须与实体编译产物一致(直接对照 schema JSON 里的 createSql 抄,最稳)。</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 11 章 -->
+<!-- ============================================================ -->
+<section id="s11">
+<h2>11 · 踩坑与设计决策集(20 条)</h2>
+<p>这一章是全项目的经验精华 —— 每一条都是开发过程中真实遇到并解决的,或在设计时特意规避的。建议每条都读两遍:第一遍记"结论",第二遍想"如果是我,能不能想到"。</p>
+
+<h3>A. 协议与序列化</h3>
+
+<h4>1. encodeDefaults=false 会跳过"默认值字段" —— 协议必填字段绝不能带默认值 <span class="badge badge-key">两次踩中</span></h4>
+<p><b>现象:</b>Agent 闭环上线后,回灌请求被 DeepSeek 拒绝:<code>422 missing field "type"</code>。<br>
+<b>根因:</b><code>ToolCall.type</code> 写了默认值 <code>"function"</code>,而 Json 配置 <code>encodeDefaults=false</code> 会跳过"值等于默认值"的字段,于是 JSON 里永远没有 <code>"type":"function"</code>。<br>
+<b>修复:</b>移除默认值(让字段成为必填)。<b>这是同一类坑的第二次</b> —— 阶段 1 的 <code>ToolDefinition.type</code> 已经踩过一次。<br>
+<b>启示:</b>凡是"会被我们重新编码发出"的协议必填字段,一律无默认值;<code>encodeDefaults=false</code> 是把双刃剑,它省流量但会静默吃掉默认值字段。调试时开 OkHttp BODY 日志,422 响应体会直接点名缺哪个字段。</p>
+
+<h4>2. data class 的 ByteArray 字段必须手写 equals/hashCode</h4>
+<p><b>现象:</b>向量内容完全相同的两个 KnowledgeEntity 被判为不等。<br>
+<b>根因:</b>Kotlin 生成的 equals 对数组字段用引用比较 <code>==</code>。<br>
+<b>修复:</b>手写 equals/hashCode,数组用 <code>contentEquals</code> / <code>contentHashCode</code>。<br>
+<b>启示:</b>数组字段(ByteArray/FloatArray…)加上 data class 或 Set/Map 使用场景,等于定时炸弹。</p>
+
+<h4>3. FunctionCall.arguments 是 String 不是 JSON 对象</h4>
+<p>OpenAI 协议的经典反直觉点:工具参数是"JSON 字符串",不是嵌套对象。写成 JsonObject 会在回灌时序列化错形。源码注释特意标了"注意是字符串,不是对象!"。</p>
+
+<h4>4. 空 tools 列表要么别发,要么发 null —— 用 takeIf 收口</h4>
+<p><code>tools?.takeIf { it.isNotEmpty() }</code>:空列表直接变 null,配合 <code>explicitNulls=false</code> 完全不发该字段。部分服务端对 <code>"tools": []</code> 会报错,这个写法一次规避所有情况。</p>
+
+<h3>B. Android 系统行为</h3>
+
+<h4>5. PendingIntent 的身份比较:extras 不参与</h4>
+<p><b>现象:</b>担心"注册和取消时 extras 不同会不会命中不了"。<br>
+<b>根因/事实:</b>PendingIntent 相等性只看 <b>requestCode + 目标组件/action/data 等过滤字段</b>,extras 完全不参与比较。<br>
+<b>修复:</b>用 <code>alarm.id.toInt()</code> 作 requestCode 作为唯一身份锚点;extras 只当数据载体,配合 <code>FLAG_UPDATE_CURRENT</code> 每次更新。</p>
+
+<h4>6. BroadcastReceiver 的 10 秒限制:异步清理必须 goAsync</h4>
+<p><b>现象:</b>闹钟触发后清理登记表的协程可能跑不完 —— onReceive 返回后进程随时可能被回收。<br>
+<b>修复:</b><code>val pending = goAsync()</code> 延长生命周期,协程 finally 里 <code>pending.finish()</code>。漏掉 finish 会导致广播永远"没结束"。</p>
+
+<h4>7. 通知渠道声音创建后不可修改 → 换声音必须换渠道 id</h4>
+<p>渠道 id <code>taskflow_alarm_v2</code> 的 _v2 就是这么来的:第一版渠道的声音不对,Android O 起的渠道属性(声音/重要性)创建即冻结,只能新建渠道 id 让系统把它当"新渠道"重新创建。<b>推论:渠道 id 要设计成"内容版本化"的</b>(taskflow_alarm_v3、v4…),而不是"功能命名"。</p>
+
+<h4>8. 华为 EMUI 三个真实坑</h4>
+<ul>
+<li><b>SET_ALARM 权限:</b>调用系统时钟的 HandleSetAlarm 需要 <code>com.android.alarm.permission.SET_ALARM</code>,不加报 Permission Denial —— 且这是"normal 级权限,安装即授予",声明了就完事。</li>
+<li><b>FakeRecognitionService:</b>系统语音识别服务禁止三方绑定,startListening 同步抛 SecurityException —— 更阴的是"不报错也不回调",所以需要 5 秒看门狗兜底(见 §8.2)。</li>
+<li><b>状态栏不显示第三方闹钟:</b>用 setAlarmClock 注册后,dumpsys 里能看到("Next alarm clock"),但 EMUI 的界面完全不渲染第三方闹钟痕迹(状态栏/锁屏/通知栏都对照试验过)。结论:<b>行为正确,显示是 OEM 策略</b>,应用内提供"我有哪些闹钟"查询来补位。</li>
+</ul>
+
+<h4>9. am start 默认不重置导航栈 / singleTop 才有 onNewIntent</h4>
+<p><b>现象:</b>调试时 adb 注入指令,却停留在旧的详情页;prefill 也收不到。<br>
+<b>根因:</b>Activity 已在运行时 am start 只会把它置前,不会重建,也不会调 onNewIntent(除非 launchMode=singleTop)。<br>
+<b>修复:</b>Manifest 设 <code>launchMode="singleTop"</code>,onNewIntent 里消费 prefill。<br>
+<b>调试启示:</b>自动化点击前先 uiautomator dump 拿实时坐标,别用硬编码坐标(列表滚动后全错位)。</p>
+
+<h4>10. 后台启动 Activity 限制(Android 10+)</h4>
+<p>应用在后台时 startActivity 被拦截。本项目的策略:① open_app 场景天然前台(用户刚提交)②闹钟走"直接拉起 try/catch → fullScreenIntent → 高优通知"三保险 ③ <code>startActivitySafely</code> 捕获一切异常如实报告。永远不要让"系统拦截"变成"应用崩溃"。</p>
+
+<h3>C. 架构与并发</h3>
+
+<h4>11. WorkManager 默认初始化 vs HiltWorkerFactory(缺一不可的配置)</h4>
+<p>Configuration.Provider 提供 HiltWorkerFactory + Manifest 移除 WorkManagerInitializer,两个都做了才算配置完整。只做前者,默认初始化先跑,自定义 Factory 静默失效(见 §9.2)。</p>
+
+<h4>12. @HiltWorker 缺 ksp("androidx.hilt:hilt-compiler") 会静默爆炸 <span class="badge badge-key">重大调试</span></h4>
+<p><b>现象:</b>任务入队后 Worker 创建失败,日志是反射的 <code>NoSuchMethodException</code>,编译期毫无提示。<br>
+<b>根因:</b>只加了 dagger 的 hilt-android-compiler,<b>没加 androidx 的 hilt-compiler</b> —— @HiltWorker 的绑定模块由后者(KSP)生成。<br>
+<b>修复:</b>依赖里补 <code>ksp("androidx.hilt:hilt-compiler")</code>。<br>
+<b>启示:</b>Hilt 的"多编译器"体系(dagger 系 + androidx 系)是两个独立坐标系,报错指向运行时而非编译时的依赖缺失最难查。</p>
+
+<h4>13. AGP 9 与 KSP:android.disallowKotlinSourceSets=false</h4>
+<p>AGP 9 内置 Kotlin 后默认拒绝第三方插件用 <code>kotlin.sourceSets</code> 注册生成目录,KSP/Hilt/Room 全灭。开关写进 gradle.properties 即可,但要理解"这是 AGP 收紧边界的过渡期兼容开关"。</p>
+
+<h4>14. 协程 try/catch 第一行必须是 CancellationException 重抛</h4>
+<p>项目里每一处 catch 都长这样:<code>catch (e: CancellationException) { throw e }</code> 在前,<code>catch (e: Exception)</code> 在后。原因:协程取消是通过 CancellationException 传播的,被通用 catch 吞掉会导致"取消不生效/资源泄漏/状态错乱"。出现位置:TaskRepository / KnowledgeRepository / TaskExecutor 调用链 / ToolRegistry / Worker。</p>
+
+<h4>15. 孤儿任务:规划失败必须落 FAILED,不能留在 PENDING</h4>
+<p><b>现象:</b>真机使用中发现任务 #7 卡在"待执行"永远不动 —— 规划网络请求失败后异常抛出,任务却已入库为 PENDING,没有 Worker 会认领它。<br>
+<b>修复:</b>catch 里 <code>setAnswer("模型规划失败:${e.message}") + updateStatus(FAILED)</code> 再重抛(UI 照常弹 Snackbar)。<br>
+<b>启示:</b>"先落库保证不丢"的另一面是"必须保证每条落库记录都有结束条件" —— 状态机不能有无法到达终态的状态。</p>
+
+<h4>16. 重复点击"允许"为什么安全(幂等三件套)</h4>
+<p>状态守卫(resumeTask 只响应 WAITING_USER)+ APPEND_OR_REPLACE 串行化 + confirmed 标记持久化 = 无论用户点几次、进程被杀几次,"已确认"最多生效一次、"过期决定"自动 no-op。</p>
+
+<h3>D. 工具与安全</h3>
+
+<h4>17. 危险默认值:空参数绝不"默认全取消"</h4>
+<p><b>现象(设计评审发现):</b>cancel_alarm 最初的空参数语义是"取消全部" —— 模型漏传参数时会静默清空用户所有闹钟。<br>
+<b>修复:</b>空参 → 直接 Failure,并在错误信息里列出当前闹钟清单(让 LLM 有机会纠正参数重试)。<br>
+<b>启示:</b>面向 LLM 的工具,"参数缺失"的默认行为必须是最保守的那个;错误信息要"带上下文",它同时也是给模型的纠错提示。</p>
+
+<h4>18. 工具描述里的中文引号惨案(编译期小坑)</h4>
+<p>Kotlin 字符串里直接写了 <code>"APP"</code>(ASCII 双引号)→ 字符串提前截断,编译报 <code>Unresolved reference 'APP'</code>。修复:换成中文书名号「APP」。<b>启示:</b>中文文案里嵌英文缩写时,统一用「」。</p>
+
+<h4>19. API Key 明文硬编码(反面教材)</h4>
+<p><code>LlmConfig.API_KEY</code> 里躺着明文 Key,源码注释自己标了 TODO 待迁移。正确做法:<code>local.properties</code>/BuildConfig 或者干脆只走 DataStore(本项目运行时配置已是主路径,常量只是出厂默认值)。<b>请勿把自己的 Key 提交进版本库</b>(本项目 prompt 文件已 gitignore 的原因之一)。</p>
+
+<h4>20. Vosk 中间结果必须累计,否则丢句子</h4>
+<p>说话停顿会让 Vosk 先产出一次 onResult;只在 onFinalResult 取文本会丢前半句。修复:StringBuilder 累计所有 onResult,最终拼接(详见 §8.2)。</p>
+
+<div class="tip"><b>把这 20 条当 checklist 用:</b>下一次你自己写 Agent/WorkManager/闹钟类功能前,先过一遍 A/B/C/D 四组,能省下大量调试时间。</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 12 章 -->
+<!-- ============================================================ -->
+<style>
+details{background:#fbfcfd;border:1px solid #dce2e8;border-radius:8px;padding:10px 14px;margin:8px 0}
+summary{cursor:pointer;color:#5d7a94;font-weight:600;font-size:14px}
+details[open] summary{margin-bottom:6px}
+</style>
+<section id="s12">
+<h2>12 · 学习路线与自测题</h2>
+
+<h3>12.1 推荐阅读顺序(按源码依赖,由浅入深)</h3>
+<table>
+<tr><th>#</th><th>主题</th><th>读什么</th><th>读完应该能回答</th></tr>
+<tr><td>1</td><td>应用骨架</td><td>MainActivity → TaskFlowApp → AppNavHost → theme(§7.1/§9.2)</td><td>从点击图标到首页出现,发生了什么?</td></tr>
+<tr><td>2</td><td>数据模型</td><td>TaskEntity / StepEntity → TaskFlowDatabase → 四个 DAO(§4.2/§10)</td><td>默写 tasks / steps 两张表的字段与状态枚举</td></tr>
+<tr><td>3</td><td>网络协议</td><td>ChatModels → LlmApiService → LlmClient → NetworkModule(§4.1)</td><td>一次 chat 请求从调用到发出 HTTP 的全过程;tools 字段怎么来的</td></tr>
+<tr><td>4</td><td>工具契约</td><td>Tool → ToolResult → ToolContext → ToolRegistry → SendSmsTool(§5.1/5.2)</td><td>亲手给项目加一个"查询电量"工具</td></tr>
+<tr><td>5</td><td>执行链主流程</td><td>TaskRepository.submitInstruction → TaskExecutionWorker → TaskExecutor.runSteps(§4.3/§6)</td><td>跟踪"一句话"变成"多步执行"的完整链路</td></tr>
+<tr><td>6</td><td>中断与恢复</td><td>StepDao.pause → TaskExecutor.resumeTask → TaskDetailScreen 权限链路(§6.1.2/§7.3)</td><td>画出点"允许"之后到任务继续执行的完整时序</td></tr>
+<tr><td>7</td><td>RAG</td><td>VectorMath → LocalEmbedder → KnowledgeRepository → PromptBuilder(§5.3/5.4)</td><td>画出一次检索的调用栈与全部阈值/预算</td></tr>
+<tr><td>8</td><td>Agent 闭环</td><td>TaskSummarizer(§5.5)</td><td>解释 422 "missing field type" 为什么发生、怎么修</td></tr>
+<tr><td>9</td><td>系统专题</td><td>AlarmScheduler → AlarmReceiver → AlarmAlertActivity;VoiceInput → VoskVoiceEngine(§8)</td><td>解释 PendingIntent 身份;复述三条语音回退路径</td></tr>
+<tr><td>10</td><td>演进对照</td><td>ToolDemoViewModel vs TaskExecutor;TaskCenterScreen vs HomeScreen(§3.3)</td><td>说出"Demo 到工程"差在哪几步</td></tr>
+</table>
+
+<h3>12.2 自测题(18 题,点击展开答案)</h3>
+
+<details><summary>1. 为什么 ToolCall.type 不能有默认值?</summary>Json 配置 encodeDefaults=false 会跳过"值等于默认值"的字段,有默认值就永远不序列化 → DeepSeek 报 422 missing field "type"。任何会被重新编码发出的协议必填字段都必须无默认值。(§11.1)</details>
+
+<details><summary>2. PendingIntent 用什么做身份?extras 为什么不能用来区分闹钟?</summary>身份 = requestCode + 目标组件/action/data,extras 不参与相等性比较。所以闹钟用实体 id 作 requestCode;extras 只是数据载体。(§8.1)</details>
+
+<details><summary>3. 任务执行到第 2 步进程被杀,重开 App 后从哪恢复?会重跑第 1 步吗?</summary>不会重跑第 1 步 —— runSteps 会 continue 跳过 SUCCESS 的步骤;第 2 步(状态 RUNNING)会被重新执行(崩溃自愈);整个恢复以 Room 里的状态为准,引擎无内存状态。(§6.1.3)</details>
+
+<details><summary>4. 用户连点两次"允许"会发生什么?为什么?</summary>第二次是安全的 no-op:resumeTask 有状态守卫(只响应 WAITING_USER),第一次处理后步骤已回到 PENDING/RUNNING;且入队用 APPEND_OR_REPLACE 串行化。(§6.1.2/§11.16)</details>
+
+<details><summary>5. 切换 DeepSeek → Qwen 后,旧知识库(256 维)如何不崩?</summary>检索时比对维度(由字节长度/4 推导):远端查询向量遇维度不符 → 用当前引擎重新嵌入并回写(自愈,单次限 20 条);本地回退向量 → 跳过不重写(防污染远端向量)。(§5.4.3)</details>
+
+<details><summary>6. 为什么"缺权限/需确认"用返回值而不是异常?</summary>它们是 agent 循环的"正常控制信号"而非意外;用 sealed class 让 when 穷尽处理、状态可持久化挂起;异常适合真正的意外。(§5.1.2)</details>
+
+<details><summary>7. 通知渠道为什么要 _v2?换铃声该怎么做?</summary>渠道创建后声音不可修改;要让已有用户获得新铃声,只能换新渠道 id 让系统重新创建。所以渠道 id 要"内容版本化"。(§11.7)</details>
+
+<details><summary>8. @HiltWorker 缺 androidx-hilt-compiler 会怎样?</summary>编译期无提示,运行时创建 Worker 时反射抛 NoSuchMethodException(dagger 与 androidx 两套编译器坐标系不同)。(§11.12)</details>
+
+<details><summary>9. Vosk 为什么必须累计 onResult?</summary>说话停顿会让 Vosk 先输出一次中间结果 onResult;只在 onFinalResult 取文本会丢前半句。所以要 StringBuilder 累计全部结果再拼接。(§11.20)</details>
+
+<details><summary>10. 华为设备上系统语音识别器可能怎样失败?三条路径?</summary>①同步被拒(SecurityException/null)→ silent 切 Vosk;②startListening 抛异常 → 标记损坏切 Vosk;③派发成功但无任何回调 → 5 秒看门狗判定损坏并要求再按一次。(§8.2)</details>
+
+<details><summary>11. 为什么所有 catch 都要先重抛 CancellationException?</summary>协程取消靠 CancellationException 传播;被通用 catch 吞掉会导致取消失效、资源泄漏、状态错乱。(§11.14)</details>
+
+<details><summary>12. cancel_alarm 空参数为什么必须失败而不是"全取消"?</summary>模型可能漏参误调用,默认全取消风险过大;失败信息附带当前闹钟清单,让 LLM 有机会纠正参数重试。(§5.2.2)</details>
+
+<details><summary>13. Room @Relation 的坑?orderedSteps 解决什么?</summary>@Relation 不保证子查询顺序;TaskWithSteps.orderedSteps 统一按 orderIndex 排序,所有展示/执行都用它。(§4.2.4)</details>
+
+<details><summary>14. 为什么 LlmClient 每次请求都重新读 settings?</summary>支持运行时切换服务商/Key/Base URL 即时生效,无需重启或重建网络栈;DataStore→内存 StateFlow 的镜像是同步读取的前提。(§4.1.4)</details>
+
+<details><summary>15. 学习闭环的三个守卫?失败任务入库会怎样?</summary>守卫:任务 SUCCESS + 步骤非空 + 所有步骤 SUCCESS。失败/取消/挂起任务入库会污染 Few-Shot,让后续规划学到错误示范。(§5.4.3)</details>
+
+<details><summary>16. 步骤 pause() 为什么必须单条 UPDATE 原子写?</summary>拆成多条 UPDATE 会让 Flow 观察者看到中间态(如已 WAITING_USER 但 pendingType 还是旧的),UI 闪出错误界面。(§4.2.5)</details>
+
+<details><summary>17. 不用输入法,如何给 App 注入一条中文指令?</summary><code>adb shell am start -n com.example.taskflowai/.MainActivity --es prefill "指令"</code>;依赖 singleTop(前台时走 onNewIntent)+ StateFlow 触发重组。(§7.1)</details>
+
+<details><summary>18. 新增一个"查询电量"工具需要改哪些文件?</summary>新建 QueryBatteryTool(实现 Tool,execute 里走 ToolContext)→ ToolModule 加一行 @Binds @IntoSet → (可选)ToolIcon 加图标映射 → 提示词提一句。Registry/引擎/UI 全部零改动。(§6 原则 6)</details>
+
+<h3>12.3 进阶挑战(想证明自己真的掌握了)</h3>
+<ul>
+<li><b>挑战 A:</b>给任务加"重试失败步骤"能力 —— 需要动 TaskExecutor(FAILED 分支)、TaskDetailScreen(按钮)、Repository(新入口),并想清楚重试后的学习闭环边界。</li>
+<li><b>挑战 B:</b>把 RAG 检索换成 HNSW / 分页扫描,保持 KnowledgeRepository 接口不变(源码注释里预判了这条演进路径)。</li>
+<li><b>挑战 C:</b>参照 VoiceInput 的引擎链模式,再实现一个"引擎可降级"的能力(比如 TTS:系统 TTS → 离线库),体会这套"降级 + 看门狗 + 进程级标记"模式的通用性。</li>
+<li><b>挑战 D:</b>给 open_app 加上"打开后可在目标应用里输入文字"的能力(提示:需要无障碍服务 AccessibilityService,普通应用无法跨应用注入事件)—— 这是本项目曾评估过、尚未实施的扩展方向。</li>
+</ul>
+</section>
+
+<!-- ============================================================ -->
+<!-- 第 13 章 -->
+<!-- ============================================================ -->
+<section id="s13">
+<h2>13 · 附录:构建 · 调试 · 术语表</h2>
+
+<h3>13.1 构建与运行</h3>
+<pre><code># 环境:Android Studio(AGP 9.4+)/ JDK 17+ / Android SDK 37
+./gradlew :app:assembleDebug          # 命令行构建
+# 或 Android Studio 直接打开运行(连接真机/模拟器)
+
+# 安装到设备
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# 首次运行:进入设置页(右上角齿轮)配置 API Key(DeepSeek / Qwen / 自定义均可)</code></pre>
+
+<h3>13.2 真机调试命令集(本项目实战沉淀)</h3>
+<table>
+<tr><th>目的</th><th>命令</th></tr>
+<tr><td>注入中文指令(免打字)</td><td><code>adb shell am start -n com.example.taskflowai/.MainActivity --es prefill "打开天气"</code></td></tr>
+<tr><td>看当前前台是哪个界面</td><td><code>adb shell dumpsys window | grep mCurrentFocus</code></td></tr>
+<tr><td>抓界面节点树(拿实时坐标/确认文案)</td><td><code>adb shell "uiautomator dump /sdcard/ui.xml && cat /sdcard/ui.xml"</code></td></tr>
+<tr><td>点击(uiautomator 拿到的坐标中心)</td><td><code>adb shell input tap X Y</code></td></tr>
+<tr><td>查看已注册的系统闹钟(验证 setAlarmClock)</td><td><code>adb shell dumpsys alarm | grep -i "next alarm"</code></td></tr>
+<tr><td>看应用日志(过滤)</td><td><code>adb logcat -s TaskExecutor TaskRepository LlmClient VoiceInput AlarmReceiver</code></td></tr>
+<tr><td>截图取证</td><td><code>adb exec-out screencap -p &gt; screen.png</code></td></tr>
+<tr><td>查看已安装应用/包名</td><td><code>adb shell pm list packages | grep 关键字</code></td></tr>
+</table>
+<div class="tip"><b>三条实战经验:</b>① 自动化点击永远先 dump 再算坐标,别用硬编码(列表滚动会让旧坐标全错);② adb 掉线时 kill-server / start-server 重连,直接重插线往往更糟;③ Git Bash(MSYS)下 adb push 本地路径要用 <code>MSYS_NO_PATHCONV=1</code> 且写 Windows 风格路径。</div>
+
+<h3>13.3 术语表</h3>
+<table>
+<tr><th>术语</th><th>一句话解释</th><th>本项目中的出现位置</th></tr>
+<tr><td>LLM / 大模型</td><td>接受文本输入、生成文本输出的模型(本项目用 DeepSeek / Qwen)</td><td>LlmClient</td></tr>
+<tr><td>Function Calling</td><td>让模型输出"调用哪个函数、传什么参"的结构化协议</td><td>ChatModels / ToolDef / 规划流程</td></tr>
+<tr><td>tool_calls / tool_call_id</td><td>模型发起的工具调用及其唯一 id;工具结果回传时必须回填配对</td><td>ToolCall / ChatMessage.toolCallId / TaskSummarizer</td></tr>
+<tr><td>Agent 循环</td><td>规划→执行→把结果回灌模型→生成结论的闭环</td><td>TaskSummarizer(闭环最后一环)</td></tr>
+<tr><td>RAG</td><td>检索增强生成:用历史相似样本作 Few-Shot 提升规划质量</td><td>KnowledgeRepository / PromptBuilder</td></tr>
+<tr><td>Few-Shot</td><td>在提示词里给模型几个"示例对话"引导其输出风格</td><td>PromptBuilder "User: … -> Assistant: 调用了 …"</td></tr>
+<tr><td>Embedding / 向量</td><td>把文本映射为浮点数组,相似文本向量相近</td><td>VectorMath / LocalEmbedder / EmbeddingModels</td></tr>
+<tr><td>余弦相似度</td><td>两个向量夹角的余弦,衡量语义相似程度</td><td>VectorMath.cosineSimilarity</td></tr>
+<tr><td>Token 预算</td><td>控制注入提示词的总长度,防止超模型上下文</td><td>PromptBuilder 三层防御(2000 字符)</td></tr>
+<tr><td>MVI</td><td>Model-View-Intent:单向数据流(Intent→VM→State→UI)</td><td>ui/screens 三件套</td></tr>
+<tr><td>StateFlow / Flow</td><td>Kotlin 响应式数据流;Room 的 Flow 查询会随数据变化自动发射</td><td>全项目状态载体</td></tr>
+<tr><td>Effect(副作用)</td><td>一次性事件(导航/Snackbar),不进 State 避免重复触发</td><td>MainEffect / TaskDetailEffect</td></tr>
+<tr><td>WorkManager / CoroutineWorker</td><td>系统级后台任务调度;即使进程被杀也会保任务</td><td>TaskExecutionWorker</td></tr>
+<tr><td>Hilt</td><td>Android 官方 DI 框架(基于 Dagger)</td><td>di/ 四模块 + 全项目注解</td></tr>
+<tr><td>KSP</td><td>Kotlin Symbol Processing,注解处理器(Hilt/Room 的代码生成)</td><td>build.gradle.kts</td></tr>
+<tr><td>Room</td><td>SQLite 的官方 ORM 层;支持编译期 SQL 校验与迁移</td><td>data/local</td></tr>
+<tr><td>DataStore</td><td>替代 SharedPreferences 的键值存储</td><td>SettingsRepository</td></tr>
+<tr><td>PendingIntent</td><td>交给系统"未来代你执行"的 Intent;身份 = requestCode + 组件</td><td>闹钟注册/取消、通知</td></tr>
+<tr><td>setAlarmClock</td><td>系统级闹钟注册 API(状态栏图标 + 锁屏全屏响铃)</td><td>AlarmScheduler</td></tr>
+<tr><td>BroadcastReceiver</td><td>接收系统广播(闹钟到点即是一条广播)</td><td>AlarmReceiver</td></tr>
+<tr><td>包可见性(&lt;queries&gt;)</td><td>Android 11+ 查询其他应用的声明白名单</td><td>Manifest(语音服务 + 启动器应用)</td></tr>
+<tr><td>无障碍服务</td><td>经用户授权后可读取屏幕节点并模拟操作的系统能力(本项目评估未采用)</td><td>§12.3 挑战 D</td></tr>
+</table>
+
+<div class="tip"><b>笔记到此结束。</b>回看一遍目录 —— 如果你能对着每一节的标题复述出核心内容,并且对 §11 的 20 条踩坑有自己的理解,那么你已经彻底吃透了这个项目。下一步就是动手:挑一个 §12.3 的挑战,或者按 §11 的 checklist 给你的下一个项目排雷。</div>
+</section>
+
+</main>
+</div>
+
+<footer>TaskFlow AI · 项目学习笔记 · 基于当前工作区源码整理 · 2026-10-06</footer>
+
+</body>
+</html>

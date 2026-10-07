@@ -1,0 +1,28 @@
+# ====== 构建产物 ======
+/build
+build/
+.gradle/
+.kotlin/
+
+# ====== IDE ======
+.idea/
+*.iml
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx
+
+# ====== 本地配置(含 SDK 路径 / 签名信息,绝不提交) ======
+local.properties
+*.jks
+*.keystore
+
+# ====== 本地临时备注文件(如记录仓库 URL 等,不上传) ======
+/url
+
+# ====== 分阶段提示词文件(prompt0~6,内含 API Key 等敏感信息,绝不要提交) ======
+prompt*
+
+# ====== 其它产物 ======
+*.apk
+*.aab
